@@ -6,61 +6,95 @@
 <title>Dashboard MPM - UPTD Puskesmas Maospati</title>
 <style>
   :root{
-    --bg:var(--card,#111); --fg:var(--foreground,#eee); --mut:var(--muted-foreground,#999);
-    --bd:var(--border,#333); --ac:var(--accent,#4ea1ff);
-    --c1:#4ea1ff; --c2:#41d1a7; --c3:#f5a623; --c4:#e2574c; --c5:#a97bf3; --c6:#ec6cad;
+    --bg:#f4f6f9; --surface:#ffffff;
+    --fg:#111827; --mut:#58606d; --bd:#e4e8ee; --bd2:#eef1f5; --ac:#2563eb;
+    --c1:#3b82f6; --c2:#10b981; --c3:#f59e0b; --c4:#ef4444; --c5:#8b5cf6; --c6:#ec4899;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 14px 30px -22px rgba(15,23,42,.45);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:var(--font-family,system-ui,-apple-system,"Segoe UI",sans-serif);color:var(--fg);background:transparent;font-size:13.5px;line-height:1.45}
-  h1,h2,h3{margin:0;font-weight:650}
-  .wrap{padding:2px 0 18px}
-  header.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);padding-bottom:12px}
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--c1),var(--c2));display:grid;place-items:center;font-weight:800;color:#04121f;font-size:15px}
-  .brand h1{font-size:17px}
-  .brand p{margin:2px 0 0;color:var(--mut);font-size:12px}
-  .meta{color:var(--mut);font-size:11.5px;text-align:right}
-  nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 16px}
-  nav.tabs button{border:1px solid var(--bd);background:transparent;color:var(--mut);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:12.5px;font-family:inherit}
-  nav.tabs button.on{color:var(--fg);border-color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,transparent)}
-  section{display:none} section.on{display:block}
-  .grid{display:grid;gap:12px}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100vh;
+    font-family:var(--font-family,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif);
+    color:var(--fg);
+    background:
+      radial-gradient(1100px 420px at 12% -8%, rgba(59,130,246,.12), transparent 62%),
+      radial-gradient(900px 400px at 88% -12%, rgba(16,185,129,.12), transparent 60%),
+      var(--bg);
+    font-size:13.5px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  }
+  h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.01em}
+  .wrap{max-width:1320px;margin:0 auto;padding:20px 20px 46px}
+  header.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);padding-bottom:14px}
+  .brand{display:flex;gap:13px;align-items:center}
+  .logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--c1),var(--c2));display:grid;place-items:center;font-weight:800;color:#04121f;font-size:14px;letter-spacing:.03em;box-shadow:0 10px 22px -14px rgba(59,130,246,.95)}
+  .brand h1{font-size:18px;line-height:1.25}
+  .brand p{margin:3px 0 0;color:var(--mut);font-size:12px;font-weight:500}
+  .meta{color:var(--mut);font-size:11.5px;text-align:right;line-height:1.55}
+  nav.tabs{position:sticky;top:0;z-index:6;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px -6px 18px;padding:12px 6px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px) saturate(150%);-webkit-backdrop-filter:blur(10px) saturate(150%)}
+  nav.tabs button{border:1px solid var(--bd);background:var(--surface);color:var(--mut);padding:7px 14px;border-radius:999px;cursor:pointer;font-size:12.5px;font-weight:600;font-family:inherit;letter-spacing:.01em;box-shadow:0 1px 2px rgba(15,23,42,.05);transition:background .16s,color .16s,border-color .16s,transform .16s}
+  nav.tabs button:hover{color:var(--fg);border-color:#cdd4de;transform:translateY(-1px)}
+  nav.tabs button.on{color:#fff;border-color:var(--fg);background:var(--fg);box-shadow:0 10px 20px -14px rgba(15,23,42,.9)}
+  nav.tabs button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+  section{display:none}
+  section.on{display:block;animation:fade .24s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .grid{display:grid;gap:14px}
   .k4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
   .k2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
-  .card{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--fg) 3%,transparent)}
-  .kpi .v{font-size:24px;font-weight:750;letter-spacing:-.5px}
-  .kpi .l{color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
-  .kpi .s{font-size:11.5px;color:var(--mut);margin-top:3px}
-  .card h3{font-size:13px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .card h3 span{color:var(--mut);font-weight:400;font-size:11.5px}
-  table{border-collapse:collapse;width:100%;font-size:12px}
-  th,td{text-align:left;padding:5px 7px;border-bottom:1px solid var(--bd);vertical-align:top}
-  th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+  .card{border:1px solid var(--bd);border-radius:14px;padding:15px 16px;background:var(--surface);box-shadow:var(--shadow)}
+  .kpi .v{font-size:26px;font-weight:700;letter-spacing:-.025em;line-height:1.15;margin-top:6px;font-variant-numeric:tabular-nums}
+  .kpi .l{color:var(--mut);font-size:10.5px;font-weight:650;text-transform:uppercase;letter-spacing:.08em}
+  .kpi .s{font-size:11.5px;color:var(--mut);margin-top:4px}
+  .card h3{font-size:13px;font-weight:650;margin-bottom:11px;padding-bottom:10px;border-bottom:1px solid var(--bd2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card h3 span{color:var(--mut);font-weight:500;font-size:11.5px}
+  table{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--bd2);vertical-align:top}
+  th{color:var(--mut);font-weight:650;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;background:#f7f9fc}
+  th:first-child{border-top-left-radius:9px}
+  th:last-child{border-top-right-radius:9px}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover td{background:#f8fafd}
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-  .barchart{display:flex;flex-direction:column;gap:6px}
-  .brow{display:grid;grid-template-columns:minmax(150px,44%) 1fr 60px;gap:8px;align-items:center;font-size:12px}
-  .brow .lab{color:var(--fg);line-height:1.25;font-size:11.5px}
-  .track{height:9px;border-radius:6px;background:color-mix(in srgb,var(--fg) 9%,transparent);overflow:hidden}
-  .fill{height:100%;border-radius:6px}
-  .val{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
-  .hm{display:grid;gap:2px;font-size:10.5px;align-items:stretch}
-  .hm .hc{height:30px;border-radius:3px;display:grid;place-items:center;color:#08131f;font-weight:600}
+  .barchart{display:flex;flex-direction:column;gap:7px}
+  .brow{display:grid;grid-template-columns:minmax(150px,44%) 1fr 60px;gap:9px;align-items:center;font-size:12px}
+  .brow .lab{color:#384152;line-height:1.3;font-size:11.5px}
+  .track{height:9px;border-radius:99px;background:#edf0f5;overflow:hidden;box-shadow:inset 0 1px 2px rgba(15,23,42,.07)}
+  .fill{height:100%;border-radius:99px}
+  .val{text-align:right;color:var(--mut);font-weight:600;font-variant-numeric:tabular-nums}
+  .hm{display:grid;gap:3px;font-size:10.5px;align-items:stretch}
+  .hm .hc{height:30px;border-radius:6px;display:grid;place-items:center;color:#0b1220;font-weight:650;font-variant-numeric:tabular-nums;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
   .hm .hl{min-height:30px;display:flex;align-items:center;color:var(--mut);font-size:10.5px;line-height:1.2;padding:2px 8px 2px 0;white-space:normal}
-  .legend{display:flex;gap:10px;align-items:center;color:var(--mut);font-size:11px;margin-top:8px;flex-wrap:wrap}
+  .legend{display:flex;gap:11px;align-items:center;color:var(--mut);font-size:11px;margin-top:9px;flex-wrap:wrap}
   .sw{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:-1px}
-  .pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;border:1px solid var(--bd)}
-  .pill.ok{color:#7ee0b8;border-color:#2f6b55;background:#12302444}
-  .pill.no{color:#ff9c92;border-color:#7a3b34;background:#3a171344}
-  .pill.wr{color:#ffd48a;border-color:#7a612f;background:#3a2c1244}
-  select,input{background:color-mix(in srgb,var(--fg) 6%,transparent);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:5px 8px;font-family:inherit;font-size:12px}
-  .rowctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:650;letter-spacing:.02em;border:1px solid transparent;white-space:nowrap}
+  .pill.ok{color:#0c7a5e;background:#e7f8f1;border-color:#bde9da}
+  .pill.no{color:#c0362c;background:#fdeceb;border-color:#f6cdc9}
+  .pill.wr{color:#95650c;background:#fdf3e2;border-color:#f4dfba}
+  select,input{background:var(--surface);color:var(--fg);border:1px solid var(--bd);border-radius:9px;padding:6px 9px;font-family:inherit;font-size:12.5px;transition:border-color .15s,box-shadow .15s}
+  select:focus-visible,input:focus-visible{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(37,99,235,.16)}
+  .rowctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:11px}
   .muted{color:var(--mut)}
-  .tl{font-size:12px;margin:0;padding-left:16px}
-  .tl li{margin:3px 0}
-  .tag{display:inline-block;padding:1px 6px;border-radius:6px;border:1px solid var(--bd);color:var(--mut);font-size:10.5px;margin:1px 3px 1px 0}
-  svg text{fill:var(--mut);font-size:10px}
-  .foot{color:var(--mut);font-size:11px;margin-top:14px;border-top:1px solid var(--bd);padding-top:10px}
-  .scroll{overflow:auto;max-height:430px}
+  .tl{font-size:12.5px;margin:0;padding-left:17px}
+  .tl li{margin:5px 0}
+  .tl b{font-weight:650}
+  .tag{display:inline-block;padding:2px 7px;border-radius:6px;border:1px solid var(--bd);background:#f7f9fc;color:#4b5563;font-size:10.5px;margin:2px 4px 2px 0}
+  svg text{fill:#6b7280;font-size:10px}
+  .foot{color:var(--mut);font-size:11px;margin-top:16px;border-top:1px solid var(--bd);padding-top:12px}
+  .scroll{overflow:auto;max-height:430px;border-radius:10px}
+  .scroll thead th{position:sticky;top:0;z-index:1;box-shadow:inset 0 -1px 0 var(--bd)}
+  .scroll::-webkit-scrollbar{width:10px;height:10px}
+  .scroll::-webkit-scrollbar-track{background:transparent}
+  .scroll::-webkit-scrollbar-thumb{background:#d2d8e1;border-radius:99px;border:2px solid transparent;background-clip:content-box}
+  .scroll::-webkit-scrollbar-thumb:hover{background:#b8c0cc;background-clip:content-box}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  @media print{
+    body{background:#fff}
+    nav.tabs{position:static;background:none;backdrop-filter:none}
+    .card{box-shadow:none;break-inside:avoid}
+    .scroll{max-height:none;overflow:visible}
+  }
 </style>
 </head>
 <body>
@@ -104,7 +138,7 @@
       <div class="card"><h3>10 Indikator Capaian Terendah <span>desa &amp; tahun terpilih (hati-hati arah indikator)</span></h3><div id="ch-terendah"></div></div>
       <div class="card" id="card-heat"><h3>Heatmap Indikator &times; Desa <span>tahun terpilih &middot; warna = % jawaban YA</span></h3>
         <div class="scroll"><div id="ch-heat"></div></div>
-        <div class="legend"><span><i class="sw" style="background:#e2574c"></i>&lt;50%</span><span><i class="sw" style="background:#f5a623"></i>50-75%</span><span><i class="sw" style="background:#41d1a7"></i>&ge;75%</span><span class="muted">sel abu = data belum ada &middot; indikator bertanda merah pada panel terendah belum tentu masalah (mis. "keluarga ada yang menderita TB" rendah = baik)</span></div>
+        <div class="legend"><span><i class="sw" style="background:#ef4444"></i>&lt;50%</span><span><i class="sw" style="background:#f59e0b"></i>50-75%</span><span><i class="sw" style="background:#10b981"></i>&ge;75%</span><span class="muted">sel abu = data belum ada &middot; indikator bertanda merah pada panel terendah belum tentu masalah (mis. "keluarga ada yang menderita TB" rendah = baik)</span></div>
       </div>
       <div class="card"><h3>Detail Indikator <span id="tbl-info"></span></h3><div class="scroll"><table id="tbl-ind"></table></div></div>
     </div>
@@ -147,7 +181,7 @@ const el = (t,c,h) => { const e=document.createElement(t); if(c)e.className=c; i
 const fmt = n => (n===null||n===undefined) ? '–' : n.toLocaleString('id-ID');
 const pct = v => (v===null||v===undefined) ? '–' : (v.toFixed(v%1?1:0)+'%');
 const COV = (y,n) => (y===null||y===undefined||n===null||n===undefined||(y+n)===0) ? null : 100*y/(y+n);
-const COL = ['#4ea1ff','#41d1a7','#f5a623','#e2574c','#a97bf3','#ec6cad'];
+const COL = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899'];
 
 /* ---------- KPI ---------- */
 const thnList = Object.keys(D.totKk).map(Number).sort();
@@ -182,14 +216,14 @@ $('#kpis').innerHTML = kpi.map(k=>`<div class="card kpi"><div class="l">${k[0]}<
       const v = r&&r.responden ? r.responden : 0;
       const yy = y + ti*(13/thn.length), hh = Math.max(1.4,(13/thn.length)-1.6);
       s += v ? `<rect x="${padL}" y="${yy.toFixed(1)}" width="${scale(v).toFixed(1)}" height="${hh.toFixed(1)}" rx="1.5" fill="${COL[ti%6]}"><title>${d} ${t}: ${v} KK</title></rect>`
-             : `<rect x="${padL}" y="${yy.toFixed(1)}" width="4" height="${hh.toFixed(1)}" rx="1.5" fill="#666"><title>${d} ${t}: belum ada data</title></rect>`;
+             : `<rect x="${padL}" y="${yy.toFixed(1)}" width="4" height="${hh.toFixed(1)}" rx="1.5" fill="#cbd5e1"><title>${d} ${t}: belum ada data</title></rect>`;
     });
   });
-  s += `<line x1="${padL}" y1="26" x2="${padL}" y2="${H-14}" stroke="#888" stroke-width=".6"/>`;
+  s += `<line x1="${padL}" y1="26" x2="${padL}" y2="${H-14}" stroke="#d5dbe4" stroke-width=".6"/>`;
   [0,0.5,1].forEach(f=>{const x=padL+scale(max*f); s+=`<text x="${x-6}" y="22">${Math.round(max*f)}</text>`;});
   s += '</svg>';
   $('#ch-responden').innerHTML = s;
-  $('#lg-responden').innerHTML = thn.map((t,i)=>`<span><i class="sw" style="background:${COL[i%6]}"></i>${t}</span>`).join('') + '<span><i class="sw" style="background:#666"></i>belum ada berkas</span>';
+  $('#lg-responden').innerHTML = thn.map((t,i)=>`<span><i class="sw" style="background:${COL[i%6]}"></i>${t}</span>`).join('') + '<span><i class="sw" style="background:#cbd5e1"></i>belum ada berkas</span>';
 })();
 
 /* ---------- status dokumen ---------- */
@@ -296,7 +330,7 @@ function renderSMD(auto){
     const t2 = D.indTexts[i[0]], c = COV(i[1],i[2]);
     const pp = prevMap[t2];
     const dl = (c!==null&&pp!==null&&pp!==undefined)? c-pp : null;
-    return `<tr><td>${String(i[3]).replace('KLASTER ','K')}</td><td>${t2.toLowerCase()}</td><td class="num">${fmt(i[1])}</td><td class="num">${fmt(i[2])}</td><td class="num">${pct(c)}</td><td class="num" style="color:${dl===null?'var(--mut)':dl>=0?'#7ee0b8':'#ff9c92'}">${dl===null?'–':(dl>0?'+':'')+dl.toFixed(1)}</td></tr>`;
+    return `<tr><td>${String(i[3]).replace('KLASTER ','K')}</td><td>${t2.toLowerCase()}</td><td class="num">${fmt(i[1])}</td><td class="num">${fmt(i[2])}</td><td class="num">${pct(c)}</td><td class="num" style="color:${dl===null?'var(--mut)':dl>=0?'#0c8f66':'#d9382e'}">${dl===null?'–':(dl>0?'+':'')+dl.toFixed(1)}</td></tr>`;
   }).join('');
   $('#tbl-ind').innerHTML = `<thead><tr><th>Klaster</th><th>Indikator</th><th class="num">YA</th><th class="num">TIDAK</th><th class="num">%</th><th class="num">Δ ${prev||''}</th></tr></thead><tbody>${rowsHtml}</tbody>`;
   $('#tbl-info').textContent = d+' '+t;
@@ -313,11 +347,11 @@ function renderSMD(auto){
     h += `<div class="hl" title="${t2}">${t2.toLowerCase().slice(0,42)}</div>`;
     cols.forEach(c=>{
       const rr = D.smd.find(x=>x.desa===c&&x.tahun===t);
-      if(!rr){ h += '<div class="hc" style="background:#5552;color:transparent" title="tidak ada data">–</div>'; return; }
+      if(!rr){ h += '<div class="hc" style="background:#eef1f5;color:#9aa4b4" title="tidak ada data">–</div>'; return; }
       const it = rr.ind.find(x=>D.indTexts[x[0]]===t2);
       const cv = it ? COV(it[1],it[2]) : null;
-      if(cv===null){ h += '<div class="hc" style="background:#5552;color:transparent" title="data tidak lengkap">–</div>'; return; }
-      const bg = cv<50?'#e2574c':cv<75?'#f5a623':'#41d1a7';
+      if(cv===null){ h += '<div class="hc" style="background:#eef1f5;color:#9aa4b4" title="data tidak lengkap">–</div>'; return; }
+      const bg = cv<50?'#ef4444':cv<75?'#f59e0b':'#10b981';
       h += `<div class="hc" style="background:${bg}" title="${c} ${t} — ${t2}: ${pct(cv)}">${cv.toFixed(0)}</div>`;
     });
   });
