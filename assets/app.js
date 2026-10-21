@@ -44,8 +44,29 @@ function barRows(rows){
   }).join('') + '</div>';
 }
 function table(cols, rows){
+  const nk = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
   return '<table><thead><tr>' + cols.map(c => `<th class="${c.num ? 'num' : ''}">${esc(c.label)}</th>`).join('') + '</tr></thead><tbody>' +
-    rows.map(r => '<tr>' + cols.map(c => `<td class="${c.num ? 'num' : ''}">${c.html ? c.html(r) : esc(r[c.key])}</td>`).join('') + '</tr>').join('') +
+    rows.map(r => {
+      const keys = Object.keys(r);
+      return '<tr>' + cols.map((c, i) => {
+        let v;
+        if (c.html) {
+          v = c.html(r);
+        } else {
+          /* pakai c.key bila ada; kalau tidak, cocokkan label dengan nama kolom data,
+             lalu jatuh ke urutan kolom. Ini menjaga tabel lama tetap terisi. */
+          let key = c.key;
+          if (key === undefined) {
+            const lab = nk(c.label);
+            key = keys.find(k => nk(k) === lab)
+              || keys.find(k => lab && nk(k).length > 1 && lab.includes(nk(k)))
+              || keys[i];
+          }
+          v = esc(r[key]);
+        }
+        return `<td class="${c.num ? 'num' : ''}">${v}</td>`;
+      }).join('') + '</tr>';
+    }).join('') +
     '</tbody></table>';
 }
 function matrixBox(cols, rows, cfg){
@@ -134,37 +155,44 @@ async function jalankanSinkron(){
       set('synctime', 'Kode dimasukkan — tekan tombol Sinkron lagi.');
       return;
     }
-    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    if (!r.ok) throw new Error(j.detail || j.error || ('HTTP ' + r.status));
     hasil = j;
   } catch (e){
     pesan = e.message;
   }
   if (!hasil){
     if (btn){ btn.disabled = false; btn.textContent = label; }
-    set('synctime', `Sinkron otomatis tidak aktif di sini (${esc(pesan)}). Jalankan <code>python tools/sync.py</code> lalu muat ulang halaman.`);
+    set('synctime', `Sinkron otomatis tidak aktif di sini (${esc(pesan)}). Jalankan <code>python tools/sync.py --refresh</code> lalu muat ulang halaman.`);
     return;
   }
   /* tunggu status selesai (lokal: status dicek ke endpoint; hosting: lewat GitHub) */
   const mulai = Date.now();
+  const batas = mulai - 30000;   /* run yang mulai sebelum ini dianggap run lama */
   const cek = async () => {
     let st = null;
     try { st = await (await fetch(SYNC_URL + '?t=' + Date.now())).json(); } catch (e) {}
     const umur = Math.round((Date.now() - mulai) / 1000);
-    if (st && st.state === 'running'){
+    const mulaiRun = st && st.mulai ? Date.parse(st.mulai) : 0;
+    /* setelah dispatch, GitHub bisa masih menampilkan run sebelumnya — jangan anggap selesai */
+    const basi = mulaiRun > 0 && mulaiRun < batas;
+    if (st && st.state === 'running' && !basi){
       set('synctime', `Sinkronisasi berjalan… ${umur}s (${esc(st.detail || '')})`);
-      setTimeout(cek, 2500);
-    } else if (st && st.state === 'error'){
+      setTimeout(cek, 3000);
+    } else if (st && !basi && st.state === 'error'){
       if (btn){ btn.disabled = false; btn.textContent = label; }
       set('synctime', 'Sinkronisasi gagal: ' + esc(String(st.detail || '').slice(0, 160)));
-    } else if (st && st.state === 'done'){
+    } else if (st && !basi && st.state === 'done'){
       set('synctime', `Sinkron selesai dalam ${umur}s — memuat ulang…`);
       setTimeout(() => location.reload(), 800);
-    } else {
-      set('synctime', 'Sinkron dijalankan. Muat ulang halaman beberapa saat lagi untuk melihat hasilnya.');
+    } else if (umur > 300){
       if (btn){ btn.disabled = false; btn.textContent = label; }
+      set('synctime', 'Sinkron masih diproses. Muat ulang halaman beberapa saat lagi untuk melihat hasilnya.');
+    } else {
+      set('synctime', `Menunggu workflow dimulai… ${umur}s`);
+      setTimeout(cek, 3000);
     }
   };
-  setTimeout(cek, 1200);
+  setTimeout(cek, 1500);
 }
 
 /* ---------- pemuatan data ---------- */

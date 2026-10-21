@@ -31,6 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, ".cache")
 DL = os.path.join(CACHE, "dl")
 DATA = os.path.join(ROOT, "data")
+REFRESH = False   # diisi dari argumen --refresh
 os.makedirs(DL, exist_ok=True); os.makedirs(DATA, exist_ok=True)
 
 # ============================ daftar 8 menu ============================
@@ -142,7 +143,7 @@ def outline(node, depth=1):
 # ============================ unduh & helper xlsx ============================
 def dl(fid, name):
     p = os.path.join(DL, re.sub(r"[^A-Za-z0-9._-]", "_", fid + "_" + name))
-    if os.path.exists(p) and os.path.getsize(p) > 2000:
+    if not REFRESH and os.path.exists(p) and os.path.getsize(p) > 2000:
         return p
     req = urllib.request.Request(f"https://drive.google.com/uc?export=download&id={fid}",
                                 headers={"User-Agent": "Mozilla/5.0"})
@@ -350,36 +351,79 @@ def analisa_kader(root, files, smd_kader=None):
     f = next((x for x in files if "kader" in x["name"].lower() and x["name"].lower().endswith(".xlsx")), None)
     per_pos, per_desa, jenis = [], {}, {}
     nama_per_desa, total_nama = {}, 0
+    total_sheet, pustu = None, []
+    unik = set()
+    duplikat = []
     if f:
         wb = load_book(f["id"], f["name"])
         if "REKAP JUMLAH KADER" in wb.sheetnames:
             cur = None
             for r in wb["REKAP JUMLAH KADER"].iter_rows(values_only=True):
                 c = pad(r, 5)
-                if NUM_ROW.match(c[0]) and c[1]: cur = title(c[1])
-                if NUM_ROW.match(c[0]) and c[2] and not NUM_ROW.match(c[2]):
-                    per_pos.append({"desa": title(cur or c[1]), "pos": title(c[2]), "kader": tonum(c[3]) or 0})
+                pos = title(c[2])
+                if not pos or NUM_ROW.match(pos):
+                    continue
+                # baris ringkasan: TOTAL / JUMLAH ... (bukan posyandu)
+                if pos.upper() in ("TOTAL", "JUMLAH") or pos.upper().startswith("JUMLAH "):
+                    if total_sheet is None:
+                        total_sheet = tonum(c[3])
+                    continue
+                n = tonum(c[3])
+                if n is None:
+                    continue
+                if c[1]:
+                    cur = title(c[1])
+                row = {"desa": title(cur or ""), "pos": pos, "kader": n}
+                if NUM_ROW.match(c[0]):
+                    per_pos.append(row)
+                else:
+                    # baris tanpa nomor (mis. PUSTU): tetap dihitung ke total & per desa,
+                    # tetapi tidak menambah jumlah posyandu.
+                    row["tambahan"] = True
+                    per_pos.append(row)
+                    pustu.append(row)
         for ws in wb.worksheets:
             head = [norm(x) for x in pad(next(ws.iter_rows(values_only=True), ()), 12)]
             if "NAMA LENGKAP" in head:
                 iv = head.index("NAMA LENGKAP")
                 di = head.index("POSYANDU DESA") if "POSYANDU DESA" in head else None
                 ji = next((head.index(h) for h in head if h.startswith("JENIS KADER")), None)
+                bi = head.index("TANGGAL LAHIR") if "TANGGAL LAHIR" in head else None
                 for i, r in enumerate(ws.iter_rows(values_only=True)):
                     if i == 0: continue
                     c = pad(r, 12)
-                    if not c[iv]: continue
+                    nm = norm(c[iv]) if c[iv] else ""
+                    if not nm or nm in ("TOTAL", "JUMLAH") or nm.startswith("JUMLAH "):
+                        continue
                     total_nama += 1
                     if di is not None: nama_per_desa[title(c[di])] = nama_per_desa.get(title(c[di]), 0) + 1
                     if ji is not None and c[ji]: jenis[title(c[ji])] = jenis.get(title(c[ji]), 0) + 1
+                    # kunci duplikat: nama + tanggal lahir + desa
+                    key = (nm, norm(c[bi]) if bi is not None else "", norm(c[di]) if di is not None else "")
+                    if key in unik:
+                        duplikat.append(cap(c[iv]))
+                    else:
+                        unik.add(key)
         for p in per_pos: per_desa[p["desa"]] = per_desa.get(p["desa"], 0) + p["kader"]
         wb.close()
     total = sum(p["kader"] for p in per_pos)
-    return {"kpi": {"total": total, "daftarNama": total_nama, "posyandu": len(per_pos),
-                    "rataPerPos": round(total / len(per_pos), 1) if per_pos else 0,
+    pos_count = len([p for p in per_pos if not p.get("tambahan")])
+    pustu_total = sum(p["kader"] for p in pustu)
+    daftar_unik = total_nama - len(duplikat)
+    return {"kpi": {"total": total, "totalSheet": total_sheet, "pustu": pustu_total,
+                    "daftarNama": total_nama, "daftarUnik": daftar_unik, "duplikat": len(duplikat),
+                    "posyandu": pos_count,
+                    "rataPerPos": round(total / pos_count, 1) if pos_count else 0,
                     "sumber": f["name"] if f else "–"},
+            "cek": {"rekap": total, "rekapLembar": total_sheet, "form": total_nama,
+                    "formUnik": daftar_unik, "duplikat": len(duplikat),
+                    "selisih": total_nama - total,
+                    "selisihLembar": (total_nama - total_sheet) if total_sheet is not None else None},
             "perPos": per_pos,
-            "perDesa": [{"desa": k, "kader": v, "nama": nama_per_desa.get(k, 0)} for k, v in sorted(per_desa.items(), key=lambda x: -x[1])],
+            "pustu": pustu,
+            "perDesa": [{"desa": k, "kader": v, "nama": nama_per_desa.get(k, 0),
+                         "selisih": nama_per_desa.get(k, 0) - v}
+                        for k, v in sorted(per_desa.items(), key=lambda x: -x[1])],
             "jenis": [{"jenis": k, "jumlah": v} for k, v in sorted(jenis.items(), key=lambda x: -x[1])],
             "privasi": "Ringkasan ini hanya memuat JUMLAH. Nama/alamat/no HP kader tidak dimuat ke dashboard publik."}
 
@@ -511,7 +555,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", help="hanya proses satu slug")
     ap.add_argument("--offline", action="store_true", help="jangan akses Drive, pakai cache")
+    ap.add_argument("--refresh", action="store_true", help="unduh ulang berkas, abaikan cache .cache/dl")
     args = ap.parse_args()
+    global REFRESH
+    REFRESH = args.refresh
 
     print("Membaca struktur 8 folder Drive MPM...")
     roots = {}
@@ -561,6 +608,7 @@ def main():
         }
         write(slug, payload)
     # --- menu tambahan: Jadwal Promkes (Google Calendar, bukan folder Drive) ---
+    ana_k = None
     if not args.only or args.only == CALENDAR["slug"]:
         print("Analisa jadwal-promkes ...")
         ana_k = analisa_kalender()
@@ -572,13 +620,19 @@ def main():
             "statistik": {"berkas": ana_k["kpi"]["total"], "subfolder": 0},
             "struktur": None, "files": [], "analisa": ana_k, "adaData": True, "jenis": "kalender",
         })
-        site["folders"].append({
-            "slug": CALENDAR["slug"], "menu": CALENDAR["menu"], "subjudul": CALENDAR["subjudul"],
-            "deskripsi": CALENDAR["deskripsi"],
-            "id": "", "url": CALENDAR["embed"], "berkas": ana_k["kpi"]["total"], "subfolder": 0,
-            "adaData": True, "jenis": "kalender",
-            "keterangan": f"{ana_k['kpi']['dekat30']} agenda 30 hari ke depan",
-        })
+    if ana_k is None:
+        # saat --only dipakai, pertahankan entri menu dari hasil sinkron sebelumnya
+        try:
+            ana_k = json.load(open(os.path.join(DATA, CALENDAR["slug"] + ".json"), encoding="utf-8"))["analisa"]
+        except Exception:
+            ana_k = {"kpi": {"total": 0, "dekat30": 0}}
+    site["folders"].append({
+        "slug": CALENDAR["slug"], "menu": CALENDAR["menu"], "subjudul": CALENDAR["subjudul"],
+        "deskripsi": CALENDAR["deskripsi"],
+        "id": "", "url": CALENDAR["embed"], "berkas": ana_k["kpi"]["total"], "subfolder": 0,
+        "adaData": True, "jenis": "kalender",
+        "keterangan": f"{ana_k['kpi']['dekat30']} agenda 30 hari ke depan",
+    })
 
     site["generated"] = datetime.now(timezone(timedelta(hours=7))).strftime("%d %B %Y %H:%M WIB")
     json.dump(site, open(os.path.join(DATA, "site.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)

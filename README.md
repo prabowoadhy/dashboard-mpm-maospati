@@ -51,8 +51,8 @@ Tombol itu bekerja dengan cara berbeda sesuai tempat situs dibuka:
 | Tempat dibuka | Yang terjadi saat tombol ditekan |
 |---|---|
 | **Lokal** (`python tools/serve.py`) | Server lokal menjalankan `tools/sync.py` lalu `tools/build_pages.py`; halaman menampilkan progres dan memuat ulang sendiri setelah selesai. |
-| **Hosting Vercel** (dengan `api/sync.js`) | Memicu workflow GitHub Actions `sync.yml`, lalu statusnya dipantau; setelah Actions selesai hosting menayangkan data baru. Perlu variabel lingkungan `GITHUB_REPO` + `GITHUB_TOKEN` (dan opsional `SYNC_SECRET`). |
-| Tanpa keduanya | Tombol menampilkan pesan: jalankan `python tools/sync.py` lalu muat ulang. |
+| **Hosting Vercel** (dengan `api/sync.js`) | Memicu workflow GitHub Actions `sync.yml`, lalu statusnya dipantau; setelah Actions selesai hosting menayangkan data baru. Perlu variabel lingkungan `GITHUB_TOKEN` (wajib; classic token dengan scope `repo` + `workflow`, atau fine-grained dengan izin Actions: write) dan opsional `GITHUB_REPO` + `SYNC_SECRET`. `GITHUB_REPO` boleh dikosongkan karena otomatis diambil dari repo Vercel. Setelah menambah variabel, **Redeploy** agar berlaku. |
+| Tanpa keduanya | Tombol menampilkan pesan: jalankan `python tools/sync.py --refresh` lalu muat ulang. |
 
 Bila `SYNC_SECRET` diisi di hosting, halaman menanyakan kode sekali dan menyimpannya di browser.
 
@@ -81,9 +81,13 @@ tools/uji_render.mjs         uji render tiap halaman + uji tombol Sinkron (butuh
 ```bash
 pip install openpyxl
 python tools/sync.py            # tarik & analisa data dari Drive  -> data/*.json
+python tools/sync.py --refresh  # sama, tetapi unduh ulang berkas (abaikan cache .cache/dl)
 python tools/build_pages.py     # (kalau struktur halaman berubah) -> *.html
 python tools/serve.py           # buka http://127.0.0.1:8080
 ```
+
+> `tools/sync.py` memakai cache `.cache/dl` agar cepat. Setelah mengubah berkas di Drive,
+> pakai `--refresh` supaya berkas terbaru benar-benar diunduh.
 
 Halaman membaca `data/*.json` lewat `fetch()`. Bila `fetch` diblokir (halaman dibuka langsung dengan
 klik dua kali, bukan lewat web server), halaman otomatis memakai **data cadangan yang ditanam di berkas HTML**

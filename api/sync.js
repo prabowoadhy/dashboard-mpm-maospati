@@ -15,8 +15,11 @@
  * GET  /api/sync  -> status proses terakhir
  * POST /api/sync  -> jalankan workflow
  */
-const REPO = process.env.GITHUB_REPO;
-const TOKEN = process.env.GITHUB_TOKEN;
+const REPO = process.env.GITHUB_REPO
+  || (process.env.VERCEL_GIT_REPO_OWNER && process.env.VERCEL_GIT_REPO_SLUG
+      ? `${process.env.VERCEL_GIT_REPO_OWNER}/${process.env.VERCEL_GIT_REPO_SLUG}`
+      : '');
+const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
 const WORKFLOW = process.env.GITHUB_WORKFLOW || 'sync.yml';
 const SECRET = process.env.SYNC_SECRET || '';
 
@@ -32,9 +35,11 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   if (!REPO || !TOKEN) {
+    const kurang = [!REPO && 'GITHUB_REPO', !TOKEN && 'GITHUB_TOKEN'].filter(Boolean).join(' dan ');
     return res.status(503).json({
       state: 'error',
-      detail: 'Sinkron daring belum disiapkan: variabel GITHUB_REPO dan GITHUB_TOKEN belum diisi di hosting.',
+      detail: `Sinkron daring belum siap: ${kurang} belum diisi di hosting. `
+        + 'Tambahkan di Vercel → Settings → Environment Variables (Production), lalu Redeploy.',
     });
   }
   if (SECRET && req.headers['x-sync-secret'] !== SECRET) {

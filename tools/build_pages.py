@@ -211,7 +211,7 @@ PAGES = [
         + card("Ringkasan per Desa", "sinkron atau belum", '<div class="scroll"><table id="t-kader"></table></div>',
                full=True, src='<code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER')
         + card("Rincian per Posyandu", "jumlah kader", '<div class="scroll"><table id="t-perpos"></table></div>',
-               full=True, src='<code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER (satu baris = satu posyandu)')
+               full=True, src='<code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER (satu baris = satu posyandu; baris <b>PUSTU</b> tanpa nomor tetap dihitung)')
         + '</div>'),
 
  dict(slug="spj-bok", menu="SPJ BOK", title="SPJ BOK — Dashboard MPM Maospati",
