@@ -4,7 +4,7 @@
   --soft:#f6f8fb;        /* latar kartu sekunder */
   --surface:#ffffff;
   --fg:#16202b;          /* teks utama */
-  --mut:#64748b;         /* teks sekunder */
+  --mut:#5f6c7d;         /* teks sekunder — 5.35:1 di putih, 5.03:1 di latar soft (lolos WCAG AA) */
   --bd:#e3e8ef;          /* garis */
   --ac:#1b62d0;          /* warna aksen (biru) */
   --ac-soft:#eaf1fd;
