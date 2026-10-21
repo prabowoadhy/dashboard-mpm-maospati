@@ -4,29 +4,31 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Dashboard MPM Maospati</title>
-<meta name="description" content="Ringkasan delapan kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati"/>
+<meta name="description" content="Ringkasan sembilan menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="index">
-<header class="top">
-  <div class="inner">
-    <div class="brand">
-      <div class="logo">MPM</div>
-      <div>
-        <h1>Dashboard MPM Maospati</h1>
-        <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+<div class="topwrap">
+  <header class="top">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo">MPM</div>
+        <div>
+          <h1>Dashboard MPM Maospati</h1>
+          <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+        </div>
       </div>
+      <div id="drivebtn"></div>
     </div>
-    <div id="drivebtn"></div>
-  </div>
-</header>
-<nav class="menu" id="navmenu"></nav>
+  </header>
+  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+</div>
 
 <div class="wrap">
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">Beranda</h2>
-      <p id="pagesub">Ringkasan delapan kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati</p>
+      <p id="pagesub">Ringkasan sembilan menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati</p>
       <div class="stat-line" id="pagemeta"></div>
     </div>
     <div id="drivebtn2"></div>
@@ -36,23 +38,37 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div id="cards"></div>
-<div class="card"><h3>Cara kerja dashboard ini<span>singkat</span></h3><div id="catatan"></div></div>
+<div class="card"><h3>Cara kerja dashboard ini<span>singkat</span></h3><div id="catatan"></div><p class="src">📄 Sumber data: <code>data/site.json</code> — hasil pembacaan 8 folder Google Drive MPM + kalender publik Promkes oleh <code>tools/sync.py</code></p></div>
 
   <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount"></span></h3>
+    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
     <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis
-    mengikuti isi folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
+    <ul class="tl">
+      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
+      beserta folder tempat berkas itu berada di Google Drive.</li>
+      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
+      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
+      halaman menampilkan angka terbaru.</li>
+      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+      "Saran perbaikan data".</li>
+    </ul>
   </div>
 
   <footer class="foot">
-    <span>Sumber data: Google Drive <b>MPM Maospati</b> (8 folder) &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; dibangun dari berkas .xlsx di Drive</span>
+    <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
+    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
   </footer>
 </div>
 
 <script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["index"] = {
- "generated": "21 October 2026 10:15 WIB",
+ "generated": "21 October 2026 10:28 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -141,6 +157,19 @@
    "berkas": 7,
    "subfolder": 1,
    "adaData": true
+  },
+  {
+   "slug": "jadwal-promkes",
+   "menu": "Jadwal Promkes",
+   "subjudul": "Jadwal kegiatan promosi kesehatan (kalender publik)",
+   "deskripsi": "Kalender kegiatan Promkes — agenda SMD/MMD, posyandu, dan penyuluhan",
+   "id": "",
+   "url": "https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1",
+   "berkas": 27,
+   "subfolder": 0,
+   "adaData": true,
+   "jenis": "kalender",
+   "keterangan": "4 agenda 30 hari ke depan"
   }
  ]
 };</script>

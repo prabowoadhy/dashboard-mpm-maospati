@@ -55,6 +55,22 @@ FOLDERS = [
 SLUGS = [f[0] for f in FOLDERS]
 DRIVE = "https://drive.google.com/drive/folders/"
 
+# ============================ menu tambahan: kalender Promkes ============================
+# Jadwal Promkes tidak memakai folder Drive, tetapi kalender publik Google.
+# ICS publik dibaca sebagai data (agenda mendatang), embed dipakai untuk tampilan kalender.
+CALENDAR = {
+    "slug": "jadwal-promkes",
+    "menu": "Jadwal Promkes",
+    "subjudul": "Jadwal kegiatan promosi kesehatan (kalender publik)",
+    "deskripsi": "Kalender kegiatan Promkes — agenda SMD/MMD, posyandu, dan penyuluhan",
+    "src": "dhellayaamanda2@gmail.com",
+    "embed": ("https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com"
+              "&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1"),
+    "ics": "https://calendar.google.com/calendar/ical/dhellayaamanda2%40gmail.com/public/basic.ics",
+}
+BULAN_ID = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+
 # ============================ crawl folder ============================
 def folder_items(fid, offline=False):
     p = os.path.join(CACHE, "folder_" + fid + ".html")
@@ -394,6 +410,102 @@ def analisa_umum(root, files, jenis):
                     "sumber": "—" if not files else "struktur folder"},
             "catatan": jenis}
 
+# ============================ analisa kalender Promkes ============================
+def analisa_kalender():
+    """Membaca ICS publik Google Calendar -> agenda mendatang + rekap jumlah."""
+    from datetime import datetime, timedelta, timezone
+    WIB = timezone(timedelta(hours=7))
+    teks = ""
+    cache = os.path.join(CACHE, "promkes.ics")
+    try:
+        req = urllib.request.Request(CALENDAR["ics"], headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=40) as r:
+            teks = r.read().decode("utf-8", "replace")
+        open(cache, "w", encoding="utf-8").write(teks)
+    except Exception as e:
+        print("    ! gagal membaca ICS:", e)
+        if os.path.exists(cache):
+            teks = open(cache, encoding="utf-8").read()
+
+    # buka baris lanjutan (diawali spasi) lalu kumpulkan VEVENT
+    baris = []
+    for b in teks.replace("\r\n", "\n").split("\n"):
+        if b[:1] in (" ", "\t") and baris:
+            baris[-1] += b[1:]
+        else:
+            baris.append(b)
+    acara = []
+    cur = None
+    for b in baris:
+        if b == "BEGIN:VEVENT":
+            cur = {}
+        elif b == "END:VEVENT" and cur is not None:
+            acara.append(cur); cur = None
+        elif cur is not None and ":" in b:
+            k, _, v = b.partition(":")
+            cur[k.split(";")[0].upper()] = v.strip()
+
+    def waktu(v):
+        """ubah nilai DTSTART/DTEND menjadi datetime lokal WIB (atau tanggal saja)."""
+        if not v:
+            return None, True
+        v = v.strip()
+        if v.endswith("Z"):
+            return datetime.strptime(v, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc).astimezone(WIB), False
+        if "T" in v:
+            try:
+                return datetime.strptime(v, "%Y%m%dT%H%M%S").replace(tzinfo=WIB), False
+            except ValueError:
+                return None, True
+        try:
+            return datetime.strptime(v, "%Y%m%d").replace(tzinfo=WIB), True
+        except ValueError:
+            return None, True
+
+    sekarang = datetime.now(WIB)
+    agenda = []
+    for a in acara:
+        mulai, seharian = waktu(a.get("DTSTART"))
+        if not mulai:
+            continue
+        selesai, _ = waktu(a.get("DTEND"))
+        agenda.append({
+            "nama": (a.get("SUMMARY") or "(tanpa nama)").strip(),
+            "mulai": mulai.isoformat(),
+            "tanggal": f"{mulai.day} {BULAN_ID[mulai.month - 1]} {mulai.year}",
+            "jam": None if seharian else mulai.strftime("%H.%M"),
+            "jamSelesai": None if (seharian or not selesai) else selesai.strftime("%H.%M"),
+            "seharian": seharian,
+            "lokasi": (a.get("LOCATION") or "").strip(),
+            "catatan": (a.get("DESCRIPTION") or "").strip()[:300],
+            "selesai": selesai.isoformat() if selesai else None,
+        })
+    agenda.sort(key=lambda x: x["mulai"])
+    mendatang = [x for x in agenda if datetime.fromisoformat(x["mulai"]) >= sekarang - timedelta(hours=6)]
+    ini = [x for x in agenda if datetime.fromisoformat(x["mulai"]).year == sekarang.year
+           and datetime.fromisoformat(x["mulai"]).month == sekarang.month]
+    batas = sekarang + timedelta(days=30)
+    dekat = [x for x in mendatang if datetime.fromisoformat(x["mulai"]) <= batas]
+    per_bulan = {}
+    for x in agenda:
+        d = datetime.fromisoformat(x["mulai"])
+        k = f"{BULAN_ID[d.month - 1]} {d.year}"
+        per_bulan[k] = per_bulan.get(k, 0) + 1
+    return {
+        "kpi": {"total": len(agenda), "mendatang": len(mendatang), "dekat30": len(dekat),
+                "bulanIni": len(ini),
+                "berikutnya": (mendatang[0]["tanggal"] + " — " + mendatang[0]["nama"]) if mendatang else "belum ada agenda",
+                "sumber": f"Kalender publik Google ({CALENDAR['src']})"},
+        "agenda": mendatang,
+        "semuaAgenda": agenda,
+        "bulanIni": ini,
+        "perBulan": [{"bulan": k, "jumlah": v} for k, v in per_bulan.items()],
+        "kalender": {"embed": CALENDAR["embed"], "ics": CALENDAR["ics"], "sumber": CALENDAR["src"]},
+        "catatan": ("Agenda dibaca dari feed ICS publik kalender tersebut. Tambah/ubah jadwal di Google Calendar, "
+                    "lalu jalankan sinkronisasi untuk memperbarui daftar ini."),
+    }
+
+
 # ============================ main ============================
 def main():
     ap = argparse.ArgumentParser()
@@ -448,6 +560,26 @@ def main():
             "adaData": analyzed and not (slug in ("dokumentasi", "spj-bok")),
         }
         write(slug, payload)
+    # --- menu tambahan: Jadwal Promkes (Google Calendar, bukan folder Drive) ---
+    if not args.only or args.only == CALENDAR["slug"]:
+        print("Analisa jadwal-promkes ...")
+        ana_k = analisa_kalender()
+        write(CALENDAR["slug"], {
+            "slug": CALENDAR["slug"], "menu": CALENDAR["menu"], "subjudul": CALENDAR["subjudul"],
+            "deskripsi": CALENDAR["deskripsi"],
+            "folder": {"id": "", "url": CALENDAR["embed"], "name": f"Google Calendar ({CALENDAR['src']})",
+                       "kalender": True},
+            "statistik": {"berkas": ana_k["kpi"]["total"], "subfolder": 0},
+            "struktur": None, "files": [], "analisa": ana_k, "adaData": True, "jenis": "kalender",
+        })
+        site["folders"].append({
+            "slug": CALENDAR["slug"], "menu": CALENDAR["menu"], "subjudul": CALENDAR["subjudul"],
+            "deskripsi": CALENDAR["deskripsi"],
+            "id": "", "url": CALENDAR["embed"], "berkas": ana_k["kpi"]["total"], "subfolder": 0,
+            "adaData": True, "jenis": "kalender",
+            "keterangan": f"{ana_k['kpi']['dekat30']} agenda 30 hari ke depan",
+        })
+
     site["generated"] = datetime.now(timezone(timedelta(hours=7))).strftime("%d %B %Y %H:%M WIB")
     json.dump(site, open(os.path.join(DATA, "site.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("  -> data/site.json\nSelesai.")

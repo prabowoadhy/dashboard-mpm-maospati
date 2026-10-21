@@ -16,10 +16,29 @@ supaya mudah dirawat:
 | 6 | Data Kader | `data-kader.html` | `data/data-kader.json` | kader per desa/posyandu, selisih rekap vs form (**tanpa data pribadi**) |
 | 7 | SPJ BOK | `spj-bok.html` | `data/spj-bok.json` | daftar berkas SPJ + saran format rekap serapan |
 | 8 | Laporan Kegiatan Dinkes | `laporan-kegiatan-dinkes.html` | `data/laporan-kegiatan-dinkes.json` | matriks kegiatan × bulan, progres, berkas pendukung |
+| 9 | Jadwal Promkes | `jadwal-promkes.html` | `data/jadwal-promkes.json` | kalender publik Google (iframe) + agenda 30 hari ke depan, agenda bulan ini, rekap per bulan dari feed ICS |
 
-Beranda `index.html` menampilkan 8 kartu menu + jumlah berkas tiap folder.
+Beranda `index.html` menampilkan 9 kartu menu + jumlah berkas tiap folder.
 Setiap halaman punya tombol **menuju folder Google Drive** dan daftar isi folder (berkas & subfolder)
-yang bisa diklik untuk membuka berkas aslinya.
+yang bisa diklik untuk membuka berkas aslinya. Halaman **Jadwal Promkes** tombolnya menuju Google Calendar.
+
+Tampilan memakai **tema putih/terang permanen** (tidak mengikuti mode gelap sistem operasi), dan baris menu
+disejajarkan dengan badan halaman (lebar konten sama: 1180px).
+
+## Keterangan sumber data di setiap panel
+
+Tiap kartu menutup isinya dengan baris <b>📄 Sumber data: …</b> yang menyebut berkas Excel asalnya
+beserta nama folder di Drive — supaya mudah ditelusuri saat ada angka yang perlu diperbaiki:
+
+* contoh pada halaman SMD MMD: <code>KELENGKAPAN SMD.xlsx</code> (folder SMD MMD), berkas rekap tiap desa
+  (<code>SUGIHWARAS SMD 2025 REKAP.xlsx</code>, <code>MALANG REKAP 2026.xlsx</code>, …);
+* pada halaman RUK: <code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> sheet <code>BAB IV</code>;
+* pada halaman Jadwal Promkes: kalender publik Google <code>dhellayaamanda2@gmail.com</code> (bukan berkas Excel).
+
+Panel yang nama berkasnya dideteksi otomatis oleh <code>tools/sync.py</code> menambahkan frasa
+<b>“terdeteksi: …”</b> berisi nama berkas yang benar-benar terbaca. Untuk mengubah keterangan itu,
+sunting argumen <code>src=</code> pada <code>tools/build_pages.py</code> lalu jalankan
+<code>python tools/build_pages.py</code>.
 
 ## Tombol "Sinkron sekarang" & waktu sinkron
 

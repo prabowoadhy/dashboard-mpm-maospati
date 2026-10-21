@@ -8,7 +8,7 @@ import vm from 'node:vm';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const ROOT = path.resolve(here, '..');
 const PAGES = ['index', 'smd-mmd', 'laporan-posyandu', 'ruk', 'dokumentasi',
-               'data-posyandu', 'data-kader', 'spj-bok', 'laporan-kegiatan-dinkes'];
+               'data-posyandu', 'data-kader', 'spj-bok', 'laporan-kegiatan-dinkes', 'jadwal-promkes'];
 
 class El {
   constructor(id = '') {
@@ -115,12 +115,16 @@ async function run(slug) {
     files: count(html('treehost'), /class="file"/g),
     folders: count(html('treehost'), /class="fld"/g),
     drive: /drive\.google\.com/.test(html('drivebtn2')),
+    kalBtn: /Buka di Google Calendar/.test(html('drivebtn2')),
     driveHeader: /drive\.google\.com/.test(html('drivebtn')),
     syncBtn: /Sinkron sekarang/.test(html('drivebtn')),
     syncTime: (html('synctime') || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80),
     menu: count(html('navmenu'), /<a /g),
     banner: (dom.get('banner') ? dom.get('banner').className : '').includes('on'),
     bad: /undefined|NaN|\[object Object\]/.test(all),
+    srcCount: (all.match(/class="src"/g) || []).length + (htmlSrc.match(/class="src"/g) || []).length,
+    iframe: (all.match(/<iframe[^>]*calendar\.google\.com/g) || []).length + (htmlSrc.match(/<iframe[^>]*calendar\.google\.com/g) || []).length,
+    srcAuto: (htmlSrc.match(/data-auto-sumber/g) || []).length,
     badSnippet: (() => { const m = /undefined|NaN|\[object Object\]/.exec(all); return m ? all.slice(Math.max(0, m.index - 70), m.index + 40).replace(/\s+/g, ' ') : ''; })(),
     sample: html('kpis').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 150),
   };
@@ -130,12 +134,15 @@ let gagal = 0;
 for (const slug of PAGES) {
   try {
     const r = await run(slug);
-    const ok = !r.bad && !r.banner && r.menu === 9 && r.syncBtn && !r.driveHeader &&
-               (slug === 'index' ? true : (r.drive && r.kpi > 0));
+    const ok = !r.bad && !r.banner && r.menu === 10 && r.syncBtn && !r.driveHeader &&
+      (slug === 'index' ? r.srcCount >= 2
+        : slug === 'jadwal-promkes' ? (r.iframe === 1 && r.kalBtn && r.srcCount >= 4)
+        : (r.drive && r.kpi > 0 && r.srcCount >= 3));
     if (!ok) gagal++;
     console.log(`${ok ? 'OK ' : '!! '}${slug.padEnd(25)} kpi=${String(r.kpi).padStart(2)} kartu=${String(r.cards).padStart(2)}` +
       ` baris=${String(r.rows).padStart(4)} sel=${String(r.cells).padStart(4)} bar=${String(r.bars).padStart(3)}` +
       ` berkas=${String(r.files).padStart(3)} folder=${String(r.folders).padStart(2)} menu=${r.menu}` +
+      ` sumber=${String(r.srcCount).padStart(2)}${r.srcAuto ? '(auto ' + r.srcAuto + ')' : ''} iframe=${r.iframe}` +
       ` drive-dibawah=${r.drive ? 'ya' : 'TIDAK'} tombol-sinkron=${r.syncBtn ? 'ada' : 'TIDAK ADA'}` +
       `${r.driveHeader ? ' DRIVE-MASIH-DI-HEADER' : ''}${r.banner ? ' BANNER-ERROR' : ''}${r.bad ? ' TEKS-RUSAK' : ''}`);
     console.log(`     ${r.syncTime}`);

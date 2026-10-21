@@ -8,19 +8,21 @@
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="data-kader">
-<header class="top">
-  <div class="inner">
-    <div class="brand">
-      <div class="logo">MPM</div>
-      <div>
-        <h1>Dashboard MPM Maospati</h1>
-        <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+<div class="topwrap">
+  <header class="top">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo">MPM</div>
+        <div>
+          <h1>Dashboard MPM Maospati</h1>
+          <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+        </div>
       </div>
+      <div id="drivebtn"></div>
     </div>
-    <div id="drivebtn"></div>
-  </div>
-</header>
-<nav class="menu" id="navmenu"></nav>
+  </header>
+  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+</div>
 
 <div class="wrap">
   <div class="pagehead">
@@ -36,18 +38,32 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Rekap vs Daftar Nama<span>selisih yang perlu dicek</span></h3><div id="c-selisih"></div></div><div class="card"><h3>Kader per Desa<span>rekap / nama terdaftar</span></h3><div id="c-desa"></div></div><div class="card"><h3>Jenis Kader<span>sebaran jenis</span></h3><div id="c-jenis"></div></div><div class="card" style="grid-column:1/-1"><h3>Ringkasan per Desa<span>sinkron atau belum</span></h3><div class="scroll"><table id="t-kader"></table></div></div><div class="card" style="grid-column:1/-1"><h3>Rincian per Posyandu<span>jumlah kader</span></h3><div class="scroll"><table id="t-perpos"></table></div></div></div>
+<div class="card"><h3>Rekap vs Daftar Nama<span>selisih yang perlu dicek</span></h3><div id="c-selisih"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>Data Kader .xlsx</code> — folder <b>DATA KADER</b>: sheet <b>REKAP JUMLAH KADER</b> (jumlah resmi) vs sheet <b>NAMA KADER</b> (hasil form)</p></div><div class="card"><h3>Kader per Desa<span>rekap / nama terdaftar</span></h3><div id="c-desa"></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER (kolom DESA/KEL, POS, KADER) &amp; sheet NAMA KADER (kolom POSYANDU DESA)</p></div><div class="card"><h3>Jenis Kader<span>sebaran jenis</span></h3><div id="c-jenis"></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet <b>NAMA KADER</b>, kolom <b>JENIS KADER</b></p></div><div class="card" style="grid-column:1/-1"><h3>Ringkasan per Desa<span>sinkron atau belum</span></h3><div class="scroll"><table id="t-kader"></table></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER</p></div><div class="card" style="grid-column:1/-1"><h3>Rincian per Posyandu<span>jumlah kader</span></h3><div class="scroll"><table id="t-perpos"></table></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER (satu baris = satu posyandu)</p></div></div>
 
   <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount"></span></h3>
+    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
     <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis
-    mengikuti isi folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
+    <ul class="tl">
+      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
+      beserta folder tempat berkas itu berada di Google Drive.</li>
+      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
+      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
+      halaman menampilkan angka terbaru.</li>
+      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+      "Saran perbaikan data".</li>
+    </ul>
   </div>
 
   <footer class="foot">
-    <span>Sumber data: Google Drive <b>MPM Maospati</b> (8 folder) &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; dibangun dari berkas .xlsx di Drive</span>
+    <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
+    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
   </footer>
 </div>
 

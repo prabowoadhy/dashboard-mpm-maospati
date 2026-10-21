@@ -13,7 +13,8 @@ const MENU = [
   { slug: 'data-posyandu',           label: 'Data Posyandu',          file: 'data-posyandu.html' },
   { slug: 'data-kader',              label: 'Data Kader',             file: 'data-kader.html' },
   { slug: 'spj-bok',                 label: 'SPJ BOK',                file: 'spj-bok.html' },
-  { slug: 'laporan-kegiatan-dinkes', label: 'Laporan Kegiatan Dinkes',file: 'laporan-kegiatan-dinkes.html' }
+  { slug: 'laporan-kegiatan-dinkes', label: 'Laporan Kegiatan Dinkes',file: 'laporan-kegiatan-dinkes.html' },
+  { slug: 'jadwal-promkes',          label: 'Jadwal Promkes',         file: 'jadwal-promkes.html' }
 ];
 const COL = ['#1f6feb','#0f9d58','#e8a33d','#d93025','#7c5cff','#d6348a','#0aa2c0','#8a6d3b'];
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -82,6 +83,22 @@ function folderTree(node, depth){
   return h;
 }
 const driveBtn = (url, label) => `<a class="btn primary" href="${url}" target="_blank" rel="noopener">📁 ${esc(label || 'Buka folder di Google Drive')}</a>`;
+/* keterangan sumber data untuk setiap panel — supaya mudah dicek ke berkas Excel aslinya */
+const srcLine = txt => `<p class="src">📄 Sumber data: ${txt}</p>`;
+
+/* sumber data untuk baris KPI di tiap halaman (KPI berada di luar kartu) */
+const KPI_SRC = {
+  'index': 'hasil pembacaan otomatis <code>tools/sync.py</code> atas 8 folder Google Drive MPM + kalender Promkes',
+  'smd-mmd': 'berkas rekap SMD per desa di folder <b>SMD MMD</b> dan <code>KELENGKAPAN SMD.xlsx</code>',
+  'laporan-posyandu': '<code>KELENGKAPAN LHK.xlsx</code> — folder <b>LAPORAN POSYANDU</b>',
+  'ruk': '<code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> — folder <b>RUK</b>',
+  'dokumentasi': 'folder <b>DOKUMENTASI</b> di Google Drive (belum ada berkas)',
+  'data-posyandu': '<code>POSYANDU AKTIF.xlsx</code> — folder <b>DATA POSYANDU</b>',
+  'data-kader': '<code>Data Kader .xlsx</code> — folder <b>DATA KADER</b>',
+  'spj-bok': 'folder <b>SPJ BOK</b> di Google Drive (belum ada berkas)',
+  'laporan-kegiatan-dinkes': '<code>KEGIATAN DINKES.xlsx</code> — folder <b>LAPORAN KEGIATAN DINKES</b>',
+  'jadwal-promkes': 'kalender publik Google <b>dhellayaamanda2@gmail.com</b> — bukan berkas Excel'
+};
 
 /* ---------- tombol Sinkron (header) ----------
    Situs statis tidak bisa menjalankan Python sendiri, jadi tombol ini memanggil endpoint:
@@ -180,6 +197,8 @@ async function boot(){
     if (page === 'index'){
       const site = await loadJSON('data/site.json');
       window.renderPage(site, null);
+      const kh = el('kpis');
+      if (kh && KPI_SRC.index) kh.innerHTML = kh.innerHTML + srcLine(KPI_SRC.index);
       set('synced', 'Data disinkronkan: <b>' + esc(site.generated) + '</b>');
       set('synctime', 'Terakhir sinkron: <b>' + esc(site.generated) + '</b>');
       return;
@@ -188,12 +207,30 @@ async function boot(){
     document.title = d.menu + ' — Dashboard MPM Maospati';
     set('pagetitle', esc(d.menu));
     set('pagesub', esc(d.subjudul) + ' · ' + esc(d.deskripsi));
-    set('drivebtn2', driveBtn(d.folder.url));
-    set('pagemeta', `<b>${fnum(d.statistik.berkas)}</b> berkas · <b>${fnum(d.statistik.subfolder)}</b> subfolder ·
-      folder: <a href="${d.folder.url}" target="_blank" rel="noopener">${esc(d.folder.name)}</a>`);
+    if (d.folder && d.folder.kalender){
+      /* halaman berbasis kalender publik, bukan folder Drive */
+      set('drivebtn2', `<a class="btn primary" href="${d.folder.url}" target="_blank" rel="noopener">📅 Buka di Google Calendar</a>`);
+      set('pagemeta', `kalender publik: <b>${esc(d.folder.name)}</b> · <b>${fnum(d.statistik.berkas)}</b> agenda terbaca`);
+      set('treehost', `<p class="muted">Halaman ini bersumber dari kalender publik Google, bukan folder Drive.</p>`);
+      set('treecard', 'Sumber: Google Calendar');
+    } else {
+      set('drivebtn2', driveBtn(d.folder.url));
+      set('pagemeta', `<b>${fnum(d.statistik.berkas)}</b> berkas · <b>${fnum(d.statistik.subfolder)}</b> subfolder ·
+        folder: <a href="${d.folder.url}" target="_blank" rel="noopener">${esc(d.folder.name)}</a>`);
+      if (d.struktur) set('treehost', folderTree(d.struktur, 0));
+      set('filecount', d.files.length + ' berkas');
+    }
     if (window.renderPage) window.renderPage(d.analisa, d);
-    if (d.struktur) set('treehost', folderTree(d.struktur, 0));
-    set('filecount', d.files.length + ' berkas');
+    /* keterangan sumber untuk baris KPI (di luar kartu) */
+    const kh = el('kpis');
+    if (kh && KPI_SRC[page]) kh.innerHTML = kh.innerHTML + srcLine(KPI_SRC[page]);
+    /* lengkapi keterangan sumber pada panel yang berkasnya dideteksi otomatis */
+    const det = d.analisa && d.analisa.kpi ? (d.analisa.kpi.sumber || d.analisa.kpi.sumberFile) : null;
+    if (det){
+      document.querySelectorAll('[data-auto-sumber]').forEach(function(e){
+        e.innerHTML += ' &middot; terdeteksi: <b>' + esc(det) + '</b>';
+      });
+    }
     set('synced', 'Data disinkronkan: <b>' + esc(d.generated || '—') + '</b>');
     set('synctime', 'Terakhir sinkron: <b>' + esc(d.generated || '—') + '</b>');
   } catch (e){

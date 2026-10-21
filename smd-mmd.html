@@ -8,19 +8,21 @@
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="smd-mmd">
-<header class="top">
-  <div class="inner">
-    <div class="brand">
-      <div class="logo">MPM</div>
-      <div>
-        <h1>Dashboard MPM Maospati</h1>
-        <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+<div class="topwrap">
+  <header class="top">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo">MPM</div>
+        <div>
+          <h1>Dashboard MPM Maospati</h1>
+          <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+        </div>
       </div>
+      <div id="drivebtn"></div>
     </div>
-    <div id="drivebtn"></div>
-  </div>
-</header>
-<nav class="menu" id="navmenu"></nav>
+  </header>
+  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+</div>
 
 <div class="wrap">
   <div class="pagehead">
@@ -36,18 +38,32 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Responden per Desa &amp; Tahun<span>KK</span></h3><div id="c-responden"></div><div class="legend" id="l-responden"></div></div><div class="card"><h3>Kelengkapan Rekap &amp; Analisa<span>KELENGKAPAN SMD.xlsx</span></h3><div id="c-kel"></div></div><div class="card"><h3>Kebutuhan &amp; Harapan Masyarakat<span>top 14 dari hasil SMD</span></h3><div id="c-keb"></div></div><div class="card"><h3>Berkas Analisa per Tahun<span>KAK, prioritas masalah, metode pemecahan</span></h3><div id="c-doc"></div></div><div class="card" style="grid-column:1/-1"><h3>Heatmap Indikator &times; Desa<span>tahun terpilih &middot; <span id="c-heat-sub"></span></span></h3><div class="rowctl"><label>Pilih tahun <select id="f-tahun"></select></label></div><div class="scroll"><div id="c-heat"></div></div><div class="legend"><span><i class="sw" style="background:#f4b6b1"></i>&lt;50%</span><span><i class="sw" style="background:#f7dfa8"></i>50–75%</span><span><i class="sw" style="background:#b7e2c6"></i>&ge;75%</span><span class="muted">sel abu = data belum lengkap · perhatikan arah indikator (sebagian rendah = baik)</span></div></div><div class="card" style="grid-column:1/-1"><h3>Detail Indikator per Desa<span><span id="c-tbl-sub"></span></span></h3><div class="rowctl"><label>Desa <select id="f-desa"></select></label><label>Tahun <select id="f-tahun2"></select></label></div><div class="scroll"><table id="t-ind"></table></div></div></div>
+<div class="card"><h3>Responden per Desa &amp; Tahun<span>KK</span></h3><div id="c-responden"></div><div class="legend" id="l-responden"></div><p class="src">📄 Sumber data: berkas rekap tiap desa di folder <b>SMD MMD</b> — mis. <code>HASIL REKAP MPT 2023.xlsx</code>, <code>SUGIHWARAS SMD 2025 REKAP.xlsx</code>, <code>MALANG REKAP 2026.xlsx</code> (baris indikator &amp; baris "Jumlah Responden : N KK")</p></div><div class="card"><h3>Kelengkapan Rekap &amp; Analisa<span>KELENGKAPAN SMD.xlsx</span></h3><div id="c-kel"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>KELENGKAPAN SMD.xlsx</code> — folder <b>SMD MMD</b> (kolom REKAP &amp; ANALISA HASIL)</p></div><div class="card"><h3>Kebutuhan &amp; Harapan Masyarakat<span>top 14 dari hasil SMD</span></h3><div id="c-keb"></div><p class="src">📄 Sumber data: baris <b>Kebutuhan dan Harapan</b> di bagian bawah setiap berkas rekap desa (folder <b>SMD MMD</b>)</p></div><div class="card"><h3>Berkas Analisa per Tahun<span>KAK, prioritas masalah, metode pemecahan</span></h3><div id="c-doc"></div><p class="src">📄 Sumber data: berkas <code>.docx/.pdf/.pptx</code> pada subfolder <b>ANALISA</b> / <b>HASIL REKAP SMD</b> (folder SMD MMD)</p></div><div class="card" style="grid-column:1/-1"><h3>Heatmap Indikator &times; Desa<span>tahun terpilih &middot; <span id="c-heat-sub"></span></span></h3><div class="rowctl"><label>Pilih tahun <select id="f-tahun"></select></label></div><div class="scroll"><div id="c-heat"></div></div><div class="legend"><span><i class="sw" style="background:#f4b6b1"></i>&lt;50%</span><span><i class="sw" style="background:#f7dfa8"></i>50–75%</span><span><i class="sw" style="background:#b7e2c6"></i>&ge;75%</span><span class="muted">sel abu = data belum lengkap · perhatikan arah indikator (sebagian rendah = baik)</span></div><p class="src">📄 Sumber data: berkas rekap tiap desa di folder <b>SMD MMD</b> — mis. <code>HASIL REKAP MPT 2023.xlsx</code>, <code>SUGIHWARAS SMD 2025 REKAP.xlsx</code>, <code>MALANG REKAP 2026.xlsx</code> (baris indikator &amp; baris "Jumlah Responden : N KK")</p></div><div class="card" style="grid-column:1/-1"><h3>Detail Indikator per Desa<span><span id="c-tbl-sub"></span></span></h3><div class="rowctl"><label>Desa <select id="f-desa"></select></label><label>Tahun <select id="f-tahun2"></select></label></div><div class="scroll"><table id="t-ind"></table></div><p class="src">📄 Sumber data: berkas rekap tiap desa di folder <b>SMD MMD</b> — mis. <code>HASIL REKAP MPT 2023.xlsx</code>, <code>SUGIHWARAS SMD 2025 REKAP.xlsx</code>, <code>MALANG REKAP 2026.xlsx</code> (baris indikator &amp; baris "Jumlah Responden : N KK")</p></div></div>
 
   <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount"></span></h3>
+    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
     <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis
-    mengikuti isi folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
+    <ul class="tl">
+      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
+      beserta folder tempat berkas itu berada di Google Drive.</li>
+      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
+      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
+      halaman menampilkan angka terbaru.</li>
+      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+      "Saran perbaikan data".</li>
+    </ul>
   </div>
 
   <footer class="foot">
-    <span>Sumber data: Google Drive <b>MPM Maospati</b> (8 folder) &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; dibangun dari berkas .xlsx di Drive</span>
+    <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
+    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
   </footer>
 </div>
 

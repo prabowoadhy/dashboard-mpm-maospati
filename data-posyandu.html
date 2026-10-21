@@ -8,19 +8,21 @@
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="data-posyandu">
-<header class="top">
-  <div class="inner">
-    <div class="brand">
-      <div class="logo">MPM</div>
-      <div>
-        <h1>Dashboard MPM Maospati</h1>
-        <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+<div class="topwrap">
+  <header class="top">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo">MPM</div>
+        <div>
+          <h1>Dashboard MPM Maospati</h1>
+          <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+        </div>
       </div>
+      <div id="drivebtn"></div>
     </div>
-    <div id="drivebtn"></div>
-  </div>
-</header>
-<nav class="menu" id="navmenu"></nav>
+  </header>
+  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+</div>
 
 <div class="wrap">
   <div class="pagehead">
@@ -36,18 +38,32 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Jumlah Posyandu per Desa<span>posyandu ILP</span></h3><div id="c-desa"></div></div><div class="card"><h3>Catatan &amp; Saran Format<span>agar data tetap terbaca</span></h3><div id="c-catatan"></div></div><div class="card" style="grid-column:1/-1"><h3>Daftar Posyandu<span>seluruh wilayah kerja</span></h3><div class="scroll"><table id="t-pos"></table></div></div></div>
+<div class="card"><h3>Jumlah Posyandu per Desa<span>posyandu ILP</span></h3><div id="c-desa"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>POSYANDU AKTIF.xlsx</code> — folder <b>DATA POSYANDU</b> (kolom DESA/KEL, POS, AKTIF)</p></div><div class="card"><h3>Catatan &amp; Saran Format<span>agar data tetap terbaca</span></h3><div id="c-catatan"></div><p class="src">📄 Sumber data: pengamatan otomatis atas <code>POSYANDU AKTIF.xlsx</code></p></div><div class="card" style="grid-column:1/-1"><h3>Daftar Posyandu<span>seluruh wilayah kerja</span></h3><div class="scroll"><table id="t-pos"></table></div><p class="src">📄 Sumber data: <code>POSYANDU AKTIF.xlsx</code> — satu baris = satu posyandu</p></div></div>
 
   <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount"></span></h3>
+    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
     <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis
-    mengikuti isi folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
+    <ul class="tl">
+      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
+      beserta folder tempat berkas itu berada di Google Drive.</li>
+      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
+      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
+      halaman menampilkan angka terbaru.</li>
+      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+      "Saran perbaikan data".</li>
+    </ul>
   </div>
 
   <footer class="foot">
-    <span>Sumber data: Google Drive <b>MPM Maospati</b> (8 folder) &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; dibangun dari berkas .xlsx di Drive</span>
+    <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
+    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
   </footer>
 </div>
 
