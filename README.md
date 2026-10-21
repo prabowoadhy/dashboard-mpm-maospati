@@ -21,21 +21,38 @@ Beranda `index.html` menampilkan 8 kartu menu + jumlah berkas tiap folder.
 Setiap halaman punya tombol **menuju folder Google Drive** dan daftar isi folder (berkas & subfolder)
 yang bisa diklik untuk membuka berkas aslinya.
 
+## Tombol "Sinkron sekarang" & waktu sinkron
+
+Di header setiap halaman ada tombol **⟳ Sinkron sekarang** dengan keterangan *Terakhir sinkron: …*
+(diambil dari `generated` pada `data/<menu>.json`). Tombol **Buka folder di Google Drive** tetap ada,
+dipindah ke bawah judul halaman.
+
+Tombol itu bekerja dengan cara berbeda sesuai tempat situs dibuka:
+
+| Tempat dibuka | Yang terjadi saat tombol ditekan |
+|---|---|
+| **Lokal** (`python tools/serve.py`) | Server lokal menjalankan `tools/sync.py` lalu `tools/build_pages.py`; halaman menampilkan progres dan memuat ulang sendiri setelah selesai. |
+| **Hosting Vercel** (dengan `api/sync.js`) | Memicu workflow GitHub Actions `sync.yml`, lalu statusnya dipantau; setelah Actions selesai hosting menayangkan data baru. Perlu variabel lingkungan `GITHUB_REPO` + `GITHUB_TOKEN` (dan opsional `SYNC_SECRET`). |
+| Tanpa keduanya | Tombol menampilkan pesan: jalankan `python tools/sync.py` lalu muat ulang. |
+
+Bila `SYNC_SECRET` diisi di hosting, halaman menanyakan kode sekali dan menyimpannya di browser.
+
 ## Struktur proyek
 
 ```
 index.html                   beranda (8 kartu menu)
 <slug>.html                  8 halaman menu (hasil tools/build_pages.py)
 assets/style.css             tampilan (tema terang minimalis, ikut mode gelap sistem)
-assets/app.js                kerangka bersama: menu, pemuatan data, KPI, tabel, matriks, daftar berkas
+assets/app.js                kerangka bersama: menu, tombol Sinkron, pemuatan data, KPI, tabel, matriks
 assets/pages/<slug>.js       ISI ringkasan tiap halaman (satu berkas per halaman -> mudah dirawat)
+api/sync.js                  serverless function: tombol Sinkron saat di-hosting (pemicu Actions)
 data/<slug>.json             hasil ekstraksi berkas dari Drive (dibuat tools/sync.py)
 data/site.json               daftar menu + jumlah berkas per folder
 tools/sync.py                baca Drive -> analisa .xlsx -> tulis data/*.json
 tools/build_pages.py         rakit 9 berkas HTML dari satu kerangka
-tools/serve.py               jalankan dashboard di komputer sendiri
+tools/serve.py               jalankan dashboard di komputer + endpoint /api/sync
 tools/check_pages.py         uji statis: id yang dipakai skrip harus ada di HTML-nya
-tools/uji_render.mjs         uji render tiap halaman di DOM tiruan dengan data asli (butuh Node)
+tools/uji_render.mjs         uji render tiap halaman + uji tombol Sinkron (butuh Node)
 .github/workflows/sync.yml   sinkronisasi otomatis setiap hari (opsional)
 .cache/                      simpanan sementara unduhan (tidak ikut di-commit)
 ```

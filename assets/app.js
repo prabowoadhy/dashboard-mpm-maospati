@@ -83,6 +83,73 @@ function folderTree(node, depth){
 }
 const driveBtn = (url, label) => `<a class="btn primary" href="${url}" target="_blank" rel="noopener">📁 ${esc(label || 'Buka folder di Google Drive')}</a>`;
 
+/* ---------- tombol Sinkron (header) ----------
+   Situs statis tidak bisa menjalankan Python sendiri, jadi tombol ini memanggil endpoint:
+     - lokal  : tools/serve.py  (POST /api/sync)  -> menjalankan tools/sync.py + build_pages.py
+     - hosting: api/sync.js     (POST /api/sync)  -> memicu workflow GitHub Actions
+   Kalau dua-duanya tidak ada, tombol memberi tahu cara sinkron manual. */
+const SYNC_URL = '/api/sync';
+
+function drawSync(){
+  const host = el('drivebtn');
+  if (!host) return;
+  host.innerHTML = `<button class="btn primary" id="btnsync" type="button">⟳ Sinkron sekarang</button>
+    <div class="muted" id="synctime" style="font-size:11px;margin-top:4px;text-align:right">Terakhir sinkron: memuat…</div>`;
+  const btn = el('btnsync');
+  if (btn) btn.onclick = () => jalankanSinkron();
+}
+
+const kodeSinkron = () => { try { return localStorage.getItem('mpm_sync') || ''; } catch (e) { return ''; } };
+
+async function jalankanSinkron(){
+  const btn = el('btnsync');
+  const label = btn ? btn.textContent : '';
+  if (btn){ btn.disabled = true; btn.textContent = 'Menyinkronkan…'; }
+  set('synctime', 'Menjalankan sinkronisasi…');
+  let hasil = null, pesan = '';
+  try {
+    const r = await fetch(SYNC_URL, { method: 'POST', headers: { 'x-sync-secret': kodeSinkron() } });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 401 || r.status === 403){
+      const kode = prompt('Kode sinkronisasi:');
+      if (kode){ try { localStorage.setItem('mpm_sync', kode); } catch (e) {} }
+      if (btn){ btn.disabled = false; btn.textContent = label; }
+      set('synctime', 'Kode dimasukkan — tekan tombol Sinkron lagi.');
+      return;
+    }
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    hasil = j;
+  } catch (e){
+    pesan = e.message;
+  }
+  if (!hasil){
+    if (btn){ btn.disabled = false; btn.textContent = label; }
+    set('synctime', `Sinkron otomatis tidak aktif di sini (${esc(pesan)}). Jalankan <code>python tools/sync.py</code> lalu muat ulang halaman.`);
+    return;
+  }
+  /* tunggu status selesai (lokal: status dicek ke endpoint; hosting: lewat GitHub) */
+  const mulai = Date.now();
+  const cek = async () => {
+    let st = null;
+    try { st = await (await fetch(SYNC_URL + '?t=' + Date.now())).json(); } catch (e) {}
+    const umur = Math.round((Date.now() - mulai) / 1000);
+    if (st && st.state === 'running'){
+      set('synctime', `Sinkronisasi berjalan… ${umur}s (${esc(st.detail || '')})`);
+      setTimeout(cek, 2500);
+    } else if (st && st.state === 'error'){
+      if (btn){ btn.disabled = false; btn.textContent = label; }
+      set('synctime', 'Sinkronisasi gagal: ' + esc(String(st.detail || '').slice(0, 160)));
+    } else if (st && st.state === 'done'){
+      set('synctime', `Sinkron selesai dalam ${umur}s — memuat ulang…`);
+      setTimeout(() => location.reload(), 800);
+    } else {
+      set('synctime', 'Sinkron dijalankan. Muat ulang halaman beberapa saat lagi untuk melihat hasilnya.');
+      if (btn){ btn.disabled = false; btn.textContent = label; }
+    }
+  };
+  setTimeout(cek, 1200);
+}
+
 /* ---------- pemuatan data ---------- */
 async function loadJSON(path){
   const slug = document.body.dataset.page;
@@ -108,25 +175,27 @@ function drawFrame(active){
 async function boot(){
   const page = document.body.dataset.page;
   drawFrame(page);
+  drawSync();
   try {
     if (page === 'index'){
       const site = await loadJSON('data/site.json');
       window.renderPage(site, null);
       set('synced', 'Data disinkronkan: <b>' + esc(site.generated) + '</b>');
+      set('synctime', 'Terakhir sinkron: <b>' + esc(site.generated) + '</b>');
       return;
     }
     const d = await loadJSON('data/' + page + '.json');
     document.title = d.menu + ' — Dashboard MPM Maospati';
     set('pagetitle', esc(d.menu));
     set('pagesub', esc(d.subjudul) + ' · ' + esc(d.deskripsi));
-    set('drivebtn', driveBtn(d.folder.url));
-    set('drivebtn2', driveBtn(d.folder.url, 'Buka folder ' + d.menu));
+    set('drivebtn2', driveBtn(d.folder.url));
     set('pagemeta', `<b>${fnum(d.statistik.berkas)}</b> berkas · <b>${fnum(d.statistik.subfolder)}</b> subfolder ·
       folder: <a href="${d.folder.url}" target="_blank" rel="noopener">${esc(d.folder.name)}</a>`);
     if (window.renderPage) window.renderPage(d.analisa, d);
     if (d.struktur) set('treehost', folderTree(d.struktur, 0));
     set('filecount', d.files.length + ' berkas');
     set('synced', 'Data disinkronkan: <b>' + esc(d.generated || '—') + '</b>');
+    set('synctime', 'Terakhir sinkron: <b>' + esc(d.generated || '—') + '</b>');
   } catch (e){
     const b = el('banner');
     if (b){
