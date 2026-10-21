@@ -19,6 +19,13 @@ def card(title, sub, inner, full=False):
             f'<h3>{title}<span>{sub}</span></h3>{inner}</div>')
 
 def page(slug, menu, title, subtitle, content):
+    data_file = "site.json" if slug == "index" else slug + ".json"
+    data_path = os.path.join(ROOT, "data", data_file)
+    inline = ""
+    if os.path.exists(data_path):
+        blob = open(data_path, encoding="utf-8").read().replace("</", "<\\/")
+        inline = ('<script>window.__DATA__ = window.__DATA__ || {}; '
+                  f'window.__DATA__["{slug}"] = {blob};</script>\n')
     return f"""<!doctype html>
 <html lang="id">
 <head>
@@ -60,7 +67,8 @@ def page(slug, menu, title, subtitle, content):
   <div class="card" style="margin-top:14px">
     <h3>Isi folder Google Drive <span id="filecount"></span></h3>
     <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis mengikuti isi folder saat data disinkronkan ulang.</p>
+    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis
+    mengikuti isi folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
   </div>
 
   <footer class="foot">
@@ -69,7 +77,7 @@ def page(slug, menu, title, subtitle, content):
   </footer>
 </div>
 
-<script src="assets/app.js"></script>
+{inline}<script src="assets/app.js"></script>
 <script src="assets/pages/{slug}.js"></script>
 </body>
 </html>

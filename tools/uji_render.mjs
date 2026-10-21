@@ -60,19 +60,27 @@ async function run(slug) {
   const ids = [...htmlSrc.matchAll(/id="([^"]+)"/g)].map(m => m[1]);
   const dom = makeDOM(ids);
   dom.doc.body.dataset.page = slug;
+  const inlineMode = process.env.UJI_MODE === 'inline';
   const sandbox = {
     ...base,
     window: { location: { pathname: '/' + slug + '.html', search: '' } },
     document: dom.doc,
-    fetch: async (p) => {
-      const file = path.join(ROOT, p);
-      if (!fs.existsSync(file)) return { ok: false, status: 404, json: async () => { throw new Error('404 ' + p); }, text: async () => '' };
-      const txt = fs.readFileSync(file, 'utf8');
-      return { ok: true, status: 200, text: async () => txt, json: async () => JSON.parse(txt) };
-    },
+    fetch: inlineMode
+      ? async () => { throw new Error('fetch diblokir (uji mode inline)'); }
+      : async (p) => {
+          const file = path.join(ROOT, p);
+          if (!fs.existsSync(file)) return { ok: false, status: 404, json: async () => { throw new Error('404 ' + p); }, text: async () => '' };
+          const txt = fs.readFileSync(file, 'utf8');
+          return { ok: true, status: 200, text: async () => txt, json: async () => JSON.parse(txt) };
+        },
   };
   sandbox.globalThis = sandbox;
   const ctx = vm.createContext(sandbox);
+  if (inlineMode){
+    /* jalankan blok data tertanam seperti yang ada di berkas HTML */
+    const m = /<script>window\.__DATA__[\s\S]*?<\/script>/.exec(htmlSrc);
+    if (m) vm.runInContext(m[0].replace(/^<script>/, '').replace(/<\/script>$/, ''), ctx, { filename: 'inline-data' });
+  }
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8'), ctx, { filename: 'app.js' });
   const pageFile = path.join(ROOT, 'assets/pages', slug + '.js');
   if (fs.existsSync(pageFile)) vm.runInContext(fs.readFileSync(pageFile, 'utf8'), ctx, { filename: slug + '.js' });

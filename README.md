@@ -49,14 +49,17 @@ python tools/build_pages.py     # (kalau struktur halaman berubah) -> *.html
 python tools/serve.py           # buka http://127.0.0.1:8080
 ```
 
-Halaman membaca `data/*.json` lewat `fetch()`, jadi **harus dibuka via `python tools/serve.py`**
-(bukan klik dua kali berkas HTML).
+Halaman membaca `data/*.json` lewat `fetch()`. Bila `fetch` diblokir (halaman dibuka langsung dengan
+klik dua kali, bukan lewat web server), halaman otomatis memakai **data cadangan yang ditanam di berkas HTML**
+saat build — jadi dashboard tetap tampil, hanya perlu `build_pages.py` ulang untuk memperbaruinya.
+Untuk data yang selalu segar, jalankan lewat `tools/serve.py` atau taruh di hosting.
 
 Uji cepat sebelum mengunggah:
 
 ```bash
 python tools/check_pages.py     # id HTML <-> skrip
-node   tools/uji_render.mjs     # 9 halaman harus "OK" semua
+node   tools/uji_render.mjs     # 9 halaman harus "OK" semua (mode fetch)
+UJI_MODE=inline node tools/uji_render.mjs   # uji juga data cadangan tertanam
 ```
 
 Unggah publikasi: repo ini bisa langsung di-import ke Vercel (preset **Other / static**, tanpa build command)

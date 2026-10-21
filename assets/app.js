@@ -85,9 +85,17 @@ const driveBtn = (url, label) => `<a class="btn primary" href="${url}" target="_
 
 /* ---------- pemuatan data ---------- */
 async function loadJSON(path){
-  const res = await fetch(path, { cache: 'no-store' });
-  if (!res.ok) throw new Error('HTTP ' + res.status + ' saat memuat ' + path);
-  return res.json();
+  const slug = document.body.dataset.page;
+  try {
+    const res = await fetch(path, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch (e) {
+    /* cadangan: data yang ditanam saat build (dipakai bila halaman dibuka tanpa web server) */
+    const inline = window.__DATA__ && window.__DATA__[slug];
+    if (inline){ console.info('Memakai data cadangan tertanam untuk ' + slug + ' (' + e.message + ')'); return inline; }
+    throw new Error(e.message + ' saat memuat ' + path);
+  }
 }
 
 /* ---------- kerangka halaman ---------- */
