@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SPJ BOK — Dashboard MPM Maospati</title>
+<meta name="description" content="Berkas pertanggungjawaban Bantuan Operasional Kesehatan"/>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body data-page="spj-bok">
+<header class="top">
+  <div class="inner">
+    <div class="brand">
+      <div class="logo">MPM</div>
+      <div>
+        <h1>Dashboard MPM Maospati</h1>
+        <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
+      </div>
+    </div>
+    <div id="drivebtn"></div>
+  </div>
+</header>
+<nav class="menu" id="navmenu"></nav>
+
+<div class="wrap">
+  <div class="pagehead">
+    <div class="t">
+      <h2 id="pagetitle">SPJ BOK</h2>
+      <p id="pagesub">Berkas pertanggungjawaban Bantuan Operasional Kesehatan</p>
+      <div class="stat-line" id="pagemeta"></div>
+    </div>
+    <div id="drivebtn2"></div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+<div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
+  <div class="grid k2">
+<div class="card" style="grid-column:1/-1"><h3>Isi Folder<span>berkas SPJ BOK</span></h3><div id="c-isi"></div></div><div class="card" style="grid-column:1/-1"><h3>Saran Struktur Berkas<span>supaya ringkasan bisa otomatis</span></h3><div id="c-saran"></div></div></div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Isi folder Google Drive <span id="filecount"></span></h3>
+    <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
+    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini otomatis mengikuti isi folder saat data disinkronkan ulang.</p>
+  </div>
+
+  <footer class="foot">
+    <span>Sumber data: Google Drive <b>MPM Maospati</b> (8 folder) &middot; <span id="synced">memuat…</span></span>
+    <span>Dashboard MPM &middot; dibangun dari berkas .xlsx di Drive</span>
+  </footer>
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/pages/spj-bok.js"></script>
+</body>
+</html>
