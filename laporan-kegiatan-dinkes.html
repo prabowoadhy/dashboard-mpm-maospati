@@ -3,16 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Laporan Kegiatan Dinkes — Dashboard MPM Maospati</title>
+<meta name="theme-color" content="#f7f4ec"/>
+<title>Laporan Kegiatan Dinkes · Dashboard MPM Maospati</title>
 <meta name="description" content="Kegiatan yang ditugaskan Dinas Kesehatan: status pengerjaan per bulan dan berkas administrasinya"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="laporan-kegiatan-dinkes">
+<a class="skip" href="#main">Langsung ke isi</a>
 <div class="topwrap">
   <header class="top">
     <div class="inner">
       <div class="brand">
-        <div class="logo">MPM</div>
+        <div class="logo" aria-hidden="true">MPM</div>
         <div>
           <h1>Dashboard MPM Maospati</h1>
           <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
@@ -21,10 +23,10 @@
       <div id="drivebtn"></div>
     </div>
   </header>
-  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+  <nav class="menu" aria-label="Menu utama"><div class="navinner" id="navmenu"></div></nav>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main">
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">Laporan Kegiatan Dinkes</h2>
@@ -38,36 +40,40 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Progres per Kegiatan<span>bulan sudah / dijadwalkan</span></h3><div id="c-progres"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>KEGIATAN DINKES.xlsx</code> — folder <b>LAPORAN KEGIATAN DINKES</b> (kolom NAMA KEGIATAN, BULAN, DIKERJAKAN SUDAH/BELUM)</p></div><div class="card"><h3>Belum Dikerjakan<span>daftar bulan yang tertunda</span></h3><div id="c-belum"></div><p class="src">📄 Sumber data: <code>KEGIATAN DINKES.xlsx</code> — baris dengan kolom DIKERJAKAN = BELUM</p></div><div class="card" style="grid-column:1/-1"><h3>Matriks Kegiatan &times; Bulan<span>✓ sudah · … belum</span></h3><div id="c-matriks"></div><p class="src">📄 Sumber data: <code>KEGIATAN DINKES.xlsx</code> — kolom BULAN</p></div><div class="card" style="grid-column:1/-1"><h3>Rincian Status<span>semua baris berkas sumber</span></h3><div class="scroll"><table id="t-keg"></table></div><p class="src">📄 Sumber data: <code>KEGIATAN DINKES.xlsx</code> — seluruh baris</p></div></div>
+<section class="card"><h3>Progres per Kegiatan<span>bulan sudah / dijadwalkan</span></h3><div id="c-progres"></div><p class="src" data-auto-sumber="1">Sumber data: <code>KEGIATAN DINKES.xlsx</code> · folder <b>LAPORAN KEGIATAN DINKES</b> (kolom NAMA KEGIATAN, BULAN, DIKERJAKAN SUDAH/BELUM)</p></section><section class="card"><h3>Belum Dikerjakan<span>daftar bulan yang tertunda</span></h3><div id="c-belum"></div><p class="src">Sumber data: <code>KEGIATAN DINKES.xlsx</code> · baris dengan kolom DIKERJAKAN = BELUM</p></section><section class="card full"><h3>Matriks Kegiatan &times; Bulan<span>sudah / belum / kosong</span></h3><div id="c-matriks"></div><p class="src">Sumber data: <code>KEGIATAN DINKES.xlsx</code> · kolom BULAN</p></section><section class="card full"><h3>Rincian Status<span>semua baris berkas sumber</span></h3><div class="scroll"><table id="t-keg"></table></div><p class="src">Sumber data: <code>KEGIATAN DINKES.xlsx</code> · seluruh baris</p></section></div>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
-    <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
-    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
-  </div>
+  <details class="utility">
+    <summary><span id="treecard">Isi folder Google Drive</span> <span id="filecount">memuat</span></summary>
+    <div class="body">
+      <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
+      <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+      folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    </div>
+  </details>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
-    <ul class="tl">
-      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
-      beserta folder tempat berkas itu berada di Google Drive.</li>
-      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
-      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
-      halaman menampilkan angka terbaru.</li>
-      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
-      "Saran perbaikan data".</li>
-    </ul>
-  </div>
+  <details class="utility">
+    <summary>Cara membaca &amp; memperbaiki data</summary>
+    <div class="body">
+      <ul class="tl">
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
+        beserta folder tempat berkas itu berada di Google Drive.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        halaman menampilkan angka terbaru.</li>
+        <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+        "Saran perbaikan data".</li>
+      </ul>
+    </div>
+  </details>
 
   <footer class="foot">
     <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
+    <span>UPTD Puskesmas Maospati</span>
   </footer>
-</div>
+</main>
 
-<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["laporan-kegiatan-dinkes"] = {"slug": "laporan-kegiatan-dinkes", "menu": "Laporan Kegiatan Dinkes", "subjudul": "Kegiatan dari Dinas Kesehatan", "deskripsi": "Kegiatan DINKES & administrasi kader buaian", "folder": {"id": "1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "url": "https://drive.google.com/drive/folders/1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "name": "LAPORAN KEGIATAN DINKES"}, "statistik": {"berkas": 7, "subfolder": 1}, "struktur": {"name": "LAPORAN KEGIATAN DINKES", "id": "1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "url": "https://drive.google.com/drive/folders/1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "files": [{"id": "12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW", "name": "KEGIATAN DINKES.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW/view"}], "children": [{"name": "KADER BUAIAN", "id": "1WU91vo7ivsDu-2Kp725Y2aOxUz7samXi", "url": "https://drive.google.com/drive/folders/1WU91vo7ivsDu-2Kp725Y2aOxUz7samXi", "files": [{"id": "1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G", "name": "KWITANSI BUAIAN KADER AGT SEPT 2026.xlsx", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G/view"}, {"id": "1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3", "name": "KWITANSI BUAIAN KADER JUNI JULI 2026.xlsx", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3/view"}, {"id": "1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s", "name": "SURTUG KADER BUAIAN AGT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s/view"}, {"id": "1OxYWQkR11EWymRvN7-MODW01y27v8vyd", "name": "SURTUG KADER BUAIAN JULI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1OxYWQkR11EWymRvN7-MODW01y27v8vyd/view"}, {"id": "1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf", "name": "SURTUG KADER BUAIAN JUNI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf/view"}, {"id": "1YPhE2R54LCSs58Yszv6RVBotpfEMsESA", "name": "SURTUG KADER BUAIAN OKT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1YPhE2R54LCSs58Yszv6RVBotpfEMsESA/view"}], "children": []}]}, "files": [{"id": "12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW", "name": "KEGIATAN DINKES.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW/view", "path": "LAPORAN KEGIATAN DINKES"}, {"id": "1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G", "name": "KWITANSI BUAIAN KADER AGT SEPT 2026.xlsx", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G/view", "path": "KADER BUAIAN"}, {"id": "1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3", "name": "KWITANSI BUAIAN KADER JUNI JULI 2026.xlsx", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3/view", "path": "KADER BUAIAN"}, {"id": "1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s", "name": "SURTUG KADER BUAIAN AGT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s/view", "path": "KADER BUAIAN"}, {"id": "1OxYWQkR11EWymRvN7-MODW01y27v8vyd", "name": "SURTUG KADER BUAIAN JULI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1OxYWQkR11EWymRvN7-MODW01y27v8vyd/view", "path": "KADER BUAIAN"}, {"id": "1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf", "name": "SURTUG KADER BUAIAN JUNI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf/view", "path": "KADER BUAIAN"}, {"id": "1YPhE2R54LCSs58Yszv6RVBotpfEMsESA", "name": "SURTUG KADER BUAIAN OKT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1YPhE2R54LCSs58Yszv6RVBotpfEMsESA/view", "path": "KADER BUAIAN"}], "analisa": {"kpi": {"kegiatan": 1, "sudah": 4, "total": 6, "sumber": "KEGIATAN DINKES.xlsx"}, "kegiatan": [{"kegiatan": "Kader Buaian", "bulan": "Juni", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "Juli", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "Agustus", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "September", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "Oktober", "sudah": false, "belum": true}, {"kegiatan": "Kader Buaian", "bulan": "November", "sudah": false, "belum": true}], "namaKegiatan": ["Kader Buaian"], "bulan": ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]}, "adaData": true, "generated": "21 October 2026 15:47 WIB"};</script>
+<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["laporan-kegiatan-dinkes"] = {"slug": "laporan-kegiatan-dinkes", "menu": "Laporan Kegiatan Dinkes", "subjudul": "Kegiatan dari Dinas Kesehatan", "deskripsi": "Kegiatan DINKES & administrasi kader buaian", "folder": {"id": "1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "url": "https://drive.google.com/drive/folders/1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "name": "LAPORAN KEGIATAN DINKES"}, "statistik": {"berkas": 7, "subfolder": 1}, "struktur": {"name": "LAPORAN KEGIATAN DINKES", "id": "1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "url": "https://drive.google.com/drive/folders/1RTT0Ey5NanOQfGYj2v7yAZf0UrTtGlkw", "files": [{"id": "12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW", "name": "KEGIATAN DINKES.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW/view"}], "children": [{"name": "KADER BUAIAN", "id": "1WU91vo7ivsDu-2Kp725Y2aOxUz7samXi", "url": "https://drive.google.com/drive/folders/1WU91vo7ivsDu-2Kp725Y2aOxUz7samXi", "files": [{"id": "1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G", "name": "KWITANSI BUAIAN KADER AGT SEPT 2026.xlsx", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G/view"}, {"id": "1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3", "name": "KWITANSI BUAIAN KADER JUNI JULI 2026.xlsx", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3/view"}, {"id": "1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s", "name": "SURTUG KADER BUAIAN AGT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s/view"}, {"id": "1OxYWQkR11EWymRvN7-MODW01y27v8vyd", "name": "SURTUG KADER BUAIAN JULI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1OxYWQkR11EWymRvN7-MODW01y27v8vyd/view"}, {"id": "1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf", "name": "SURTUG KADER BUAIAN JUNI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf/view"}, {"id": "1YPhE2R54LCSs58Yszv6RVBotpfEMsESA", "name": "SURTUG KADER BUAIAN OKT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1YPhE2R54LCSs58Yszv6RVBotpfEMsESA/view"}], "children": []}]}, "files": [{"id": "12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW", "name": "KEGIATAN DINKES.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/12OFL0EiUtbuM8qoEVpv4O4ugZv3lMNxW/view", "path": "LAPORAN KEGIATAN DINKES"}, {"id": "1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G", "name": "KWITANSI BUAIAN KADER AGT SEPT 2026.xlsx", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1CEca_-MY3wkb40cSur5lKqF7EhdJv1_G/view", "path": "KADER BUAIAN"}, {"id": "1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3", "name": "KWITANSI BUAIAN KADER JUNI JULI 2026.xlsx", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1LHzrNxIbZYi4IdUSdmW0z81W1rqNsCi3/view", "path": "KADER BUAIAN"}, {"id": "1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s", "name": "SURTUG KADER BUAIAN AGT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1QDWGAY5UrJztLejVdUM5xQpZneCF7N5s/view", "path": "KADER BUAIAN"}, {"id": "1OxYWQkR11EWymRvN7-MODW01y27v8vyd", "name": "SURTUG KADER BUAIAN JULI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1OxYWQkR11EWymRvN7-MODW01y27v8vyd/view", "path": "KADER BUAIAN"}, {"id": "1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf", "name": "SURTUG KADER BUAIAN JUNI 2026.doc", "kind": "file", "modified": "Aug 6", "url": "https://drive.google.com/file/d/1GU1jvjNcW4dwxM1C-HHME_km8HG3f4Mf/view", "path": "KADER BUAIAN"}, {"id": "1YPhE2R54LCSs58Yszv6RVBotpfEMsESA", "name": "SURTUG KADER BUAIAN OKT 2026.doc", "kind": "file", "modified": "Oct 15", "url": "https://drive.google.com/file/d/1YPhE2R54LCSs58Yszv6RVBotpfEMsESA/view", "path": "KADER BUAIAN"}], "analisa": {"kpi": {"kegiatan": 1, "sudah": 4, "total": 6, "sumber": "KEGIATAN DINKES.xlsx"}, "kegiatan": [{"kegiatan": "Kader Buaian", "bulan": "Juni", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "Juli", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "Agustus", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "September", "sudah": true, "belum": false}, {"kegiatan": "Kader Buaian", "bulan": "Oktober", "sudah": false, "belum": true}, {"kegiatan": "Kader Buaian", "bulan": "November", "sudah": false, "belum": true}], "namaKegiatan": ["Kader Buaian"], "bulan": ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]}, "adaData": true, "generated": "21 Oktober 2026 15:47 WIB"};</script>
 <script src="assets/app.js"></script>
 <script src="assets/pages/laporan-kegiatan-dinkes.js"></script>
 </body>

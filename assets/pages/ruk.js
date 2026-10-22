@@ -1,4 +1,4 @@
-/* RUK — Rencana Usulan Kegiatan */
+/* RUK · Rencana Usulan Kegiatan */
 window.renderPage = function(a){
   const k = a.kpi || {}, keg = a.kegiatan || [], per = a.perBagian || [];
   const bagian = [...new Set(keg.map(x => x.bagian).filter(Boolean))].sort();
@@ -6,7 +6,7 @@ window.renderPage = function(a){
     { label: 'Kegiatan diusulkan', value: k.kegiatan, sub: 'baris kegiatan pada BAB IV' },
     { label: 'Bagian / unit', value: k.bagian, sub: 'pelayanan & program' },
     { label: 'Punya penanggung jawab', value: k.denganPJ + '/' + k.kegiatan, sub: 'baris dengan PJ terisi' },
-    { label: 'Sumber berkas', value: 'xlsx', sub: k.sumber || '—' },
+    { label: 'Sumber berkas', value: 'xlsx', sub: k.sumber || '-', small: true },
   ]));
 
   set('c-bagian', barRows(per.slice(0, 14).map(x => ({ label: x.bagian, value: x.jumlah, note: x.jumlah + ' keg' }))));
@@ -27,7 +27,7 @@ window.renderPage = function(a){
 
   set('c-catatan', `<ul class="tl">
     <li>Data diambil dari berkas <b>${esc(k.sumber || 'BAB IV')}</b> pada folder RUK.</li>
-    <li>Baris yang belum punya penanggung jawab: <b>${k.kegiatan - k.denganPJ}</b> kegiatan — lengkapi di berkas aslinya.</li>
+    <li>Baris yang belum punya penanggung jawab: <b>${k.kegiatan - k.denganPJ}</b> kegiatan · lengkapi di berkas aslinya.</li>
     <li>Supaya terbaca rapi oleh dashboard, usulkan format kolom: <code>Kode | Bagian | Kegiatan | Tujuan | Sasaran | Target | PJ | Anggaran</code> dalam satu baris kepala (tanpa sel gabungan).</li>
   </ul>`);
 };

@@ -1,8 +1,8 @@
-/* Data Posyandu — daftar posyandu ILP */
+/* Data Posyandu · daftar posyandu ILP */
 window.renderPage = function(a){
   const k = a.kpi || {}, pos = a.posyandu || [], per = a.perDesa || [];
   set('kpis', kpiCards([
-    { label: 'Posyandu', value: k.posyandu, sub: 'dari ' + (k.sumber || '—') },
+    { label: 'Posyandu', value: k.posyandu, sub: 'dari ' + (k.sumber || '-') },
     { label: 'Aktif', value: k.aktif + '/' + k.posyandu, sub: 'status pada berkas sumber' },
     { label: 'Desa / kelurahan', value: k.desa, sub: 'wilayah kerja UPTD' },
     { label: 'Rata-rata per desa', value: k.desa ? (k.posyandu / k.desa).toFixed(1) : '–', sub: 'posyandu / desa' },
@@ -15,7 +15,7 @@ window.renderPage = function(a){
     pos.map((p, i) => ({ no: i + 1, desa: p.desa, pos: p.pos, aktif: p.aktif }))
   ));
   set('c-catatan', `<ul class="tl">
-    <li>Sumber: <b>${esc(k.sumber || '—')}</b> pada folder Data Posyandu.</li>
+    <li>Sumber: <b>${esc(k.sumber || '-')}</b> pada folder Data Posyandu.</li>
     <li>Tambahkan kolom <code>STATUS</code> berisi <code>AKTIF</code>/<code>TIDAK AKTIF</code> agar perubahan status otomatis ikut tampil.</li>
     <li>Berkas LHK bulanan (docx) yang ada di subfolder tahun akan muncul di daftar isi folder di bawah.</li>
   </ul>`);

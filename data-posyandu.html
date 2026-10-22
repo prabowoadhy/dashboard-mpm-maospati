@@ -3,16 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Data Posyandu — Dashboard MPM Maospati</title>
+<meta name="theme-color" content="#f7f4ec"/>
+<title>Data Posyandu · Dashboard MPM Maospati</title>
 <meta name="description" content="Daftar posyandu ILP wilayah kerja UPTD Puskesmas Maospati beserta status keaktifannya"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="data-posyandu">
+<a class="skip" href="#main">Langsung ke isi</a>
 <div class="topwrap">
   <header class="top">
     <div class="inner">
       <div class="brand">
-        <div class="logo">MPM</div>
+        <div class="logo" aria-hidden="true">MPM</div>
         <div>
           <h1>Dashboard MPM Maospati</h1>
           <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
@@ -21,10 +23,10 @@
       <div id="drivebtn"></div>
     </div>
   </header>
-  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+  <nav class="menu" aria-label="Menu utama"><div class="navinner" id="navmenu"></div></nav>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main">
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">Data Posyandu</h2>
@@ -38,36 +40,40 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Jumlah Posyandu per Desa<span>posyandu ILP</span></h3><div id="c-desa"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>POSYANDU AKTIF.xlsx</code> — folder <b>DATA POSYANDU</b> (kolom DESA/KEL, POS, AKTIF)</p></div><div class="card"><h3>Catatan &amp; Saran Format<span>agar data tetap terbaca</span></h3><div id="c-catatan"></div><p class="src">📄 Sumber data: pengamatan otomatis atas <code>POSYANDU AKTIF.xlsx</code></p></div><div class="card" style="grid-column:1/-1"><h3>Daftar Posyandu<span>seluruh wilayah kerja</span></h3><div class="scroll"><table id="t-pos"></table></div><p class="src">📄 Sumber data: <code>POSYANDU AKTIF.xlsx</code> — satu baris = satu posyandu</p></div></div>
+<section class="card"><h3>Jumlah Posyandu per Desa<span>posyandu ILP</span></h3><div id="c-desa"></div><p class="src" data-auto-sumber="1">Sumber data: <code>POSYANDU AKTIF.xlsx</code> · folder <b>DATA POSYANDU</b> (kolom DESA/KEL, POS, AKTIF)</p></section><section class="card"><h3>Catatan &amp; Saran Format<span>agar data tetap terbaca</span></h3><div id="c-catatan"></div><p class="src">Sumber data: pengamatan otomatis atas <code>POSYANDU AKTIF.xlsx</code></p></section><section class="card full"><h3>Daftar Posyandu<span>seluruh wilayah kerja</span></h3><div class="scroll"><table id="t-pos"></table></div><p class="src">Sumber data: <code>POSYANDU AKTIF.xlsx</code> · satu baris = satu posyandu</p></section></div>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
-    <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
-    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
-  </div>
+  <details class="utility">
+    <summary><span id="treecard">Isi folder Google Drive</span> <span id="filecount">memuat</span></summary>
+    <div class="body">
+      <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
+      <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+      folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    </div>
+  </details>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
-    <ul class="tl">
-      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
-      beserta folder tempat berkas itu berada di Google Drive.</li>
-      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
-      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
-      halaman menampilkan angka terbaru.</li>
-      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
-      "Saran perbaikan data".</li>
-    </ul>
-  </div>
+  <details class="utility">
+    <summary>Cara membaca &amp; memperbaiki data</summary>
+    <div class="body">
+      <ul class="tl">
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
+        beserta folder tempat berkas itu berada di Google Drive.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        halaman menampilkan angka terbaru.</li>
+        <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+        "Saran perbaikan data".</li>
+      </ul>
+    </div>
+  </details>
 
   <footer class="foot">
     <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
+    <span>UPTD Puskesmas Maospati</span>
   </footer>
-</div>
+</main>
 
-<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["data-posyandu"] = {"slug": "data-posyandu", "menu": "Data Posyandu", "subjudul": "Data posyandu & laporan LHK", "deskripsi": "Daftar posyandu ILP beserta statusnya", "folder": {"id": "19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "url": "https://drive.google.com/drive/folders/19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "name": "DATA POSYANDU"}, "statistik": {"berkas": 4, "subfolder": 2}, "struktur": {"name": "DATA POSYANDU", "id": "19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "url": "https://drive.google.com/drive/folders/19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "files": [{"id": "1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW", "name": "POSYANDU AKTIF.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW/view"}], "children": [{"name": "2025", "id": "1cJZeScm5RdswdiQ7iVuxvTthAZeT-T4k", "url": "https://drive.google.com/drive/folders/1cJZeScm5RdswdiQ7iVuxvTthAZeT-T4k", "files": [], "children": []}, {"name": "2026", "id": "156DCb58fYye8G86M9oqdY3-LgcaIauWK", "url": "https://drive.google.com/drive/folders/156DCb58fYye8G86M9oqdY3-LgcaIauWK", "files": [{"id": "15tVrS8SVskIjSV4p16ZVEY30TH_YagZo", "name": "LHK POSYANDU FEB 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/15tVrS8SVskIjSV4p16ZVEY30TH_YagZo/view"}, {"id": "1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m", "name": "LHK POSYANDU JAN 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m/view"}, {"id": "1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0", "name": "LHK POSYANDU MAR 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0/view"}], "children": []}]}, "files": [{"id": "1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW", "name": "POSYANDU AKTIF.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW/view", "path": "DATA POSYANDU"}, {"id": "15tVrS8SVskIjSV4p16ZVEY30TH_YagZo", "name": "LHK POSYANDU FEB 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/15tVrS8SVskIjSV4p16ZVEY30TH_YagZo/view", "path": "2026"}, {"id": "1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m", "name": "LHK POSYANDU JAN 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m/view", "path": "2026"}, {"id": "1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0", "name": "LHK POSYANDU MAR 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0/view", "path": "2026"}], "analisa": {"kpi": {"posyandu": 42, "aktif": 42, "desa": 8, "sumber": "POSYANDU AKTIF.xlsx"}, "posyandu": [{"desa": "Kraton", "pos": "Melati 1", "aktif": true}, {"desa": "Kraton", "pos": "Melati 2", "aktif": true}, {"desa": "Kraton", "pos": "Melati 3", "aktif": true}, {"desa": "Kraton", "pos": "Melati 4", "aktif": true}, {"desa": "Kraton", "pos": "Melati 5", "aktif": true}, {"desa": "Kraton", "pos": "Melati 6", "aktif": true}, {"desa": "Kraton", "pos": "Melati 7", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 1", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 2", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 3", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 4", "aktif": true}, {"desa": "Malang", "pos": "Cut Nyak Dien 1", "aktif": true}, {"desa": "Malang", "pos": "Cut Nyak Dien 2", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 1", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 2", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 3", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 4", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 5", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 6", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 7", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 8", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 9", "aktif": true}, {"desa": "Maospati", "pos": "Merak", "aktif": true}, {"desa": "Maospati", "pos": "Camar", "aktif": true}, {"desa": "Maospati", "pos": "Cendrawasih", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 1", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 2", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 3", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 4", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 5", "aktif": true}, {"desa": "Sempol", "pos": "Larasati 1", "aktif": true}, {"desa": "Sempol", "pos": "Larasati 2", "aktif": true}, {"desa": "Sempol", "pos": "Larasati 3", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 1", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 2", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 3", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 4", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 5", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 1", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 2", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 3", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 4", "aktif": true}], "perDesa": [{"desa": "Maospati", "jumlah": 12}, {"desa": "Kraton", "jumlah": 7}, {"desa": "Mranggen", "jumlah": 5}, {"desa": "Sugihwaras", "jumlah": 5}, {"desa": "Gulun", "jumlah": 4}, {"desa": "Tanjungsepreh", "jumlah": 4}, {"desa": "Sempol", "jumlah": 3}, {"desa": "Malang", "jumlah": 2}]}, "adaData": true, "generated": "21 October 2026 15:47 WIB"};</script>
+<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["data-posyandu"] = {"slug": "data-posyandu", "menu": "Data Posyandu", "subjudul": "Data posyandu & laporan LHK", "deskripsi": "Daftar posyandu ILP beserta statusnya", "folder": {"id": "19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "url": "https://drive.google.com/drive/folders/19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "name": "DATA POSYANDU"}, "statistik": {"berkas": 4, "subfolder": 2}, "struktur": {"name": "DATA POSYANDU", "id": "19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "url": "https://drive.google.com/drive/folders/19dczLeNHcb20b9r-fVi1QP5ohF7oqQim", "files": [{"id": "1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW", "name": "POSYANDU AKTIF.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW/view"}], "children": [{"name": "2025", "id": "1cJZeScm5RdswdiQ7iVuxvTthAZeT-T4k", "url": "https://drive.google.com/drive/folders/1cJZeScm5RdswdiQ7iVuxvTthAZeT-T4k", "files": [], "children": []}, {"name": "2026", "id": "156DCb58fYye8G86M9oqdY3-LgcaIauWK", "url": "https://drive.google.com/drive/folders/156DCb58fYye8G86M9oqdY3-LgcaIauWK", "files": [{"id": "15tVrS8SVskIjSV4p16ZVEY30TH_YagZo", "name": "LHK POSYANDU FEB 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/15tVrS8SVskIjSV4p16ZVEY30TH_YagZo/view"}, {"id": "1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m", "name": "LHK POSYANDU JAN 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m/view"}, {"id": "1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0", "name": "LHK POSYANDU MAR 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0/view"}], "children": []}]}, "files": [{"id": "1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW", "name": "POSYANDU AKTIF.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1VbuflAQ3HEMveurs8PgEqRK1EKMO3PMW/view", "path": "DATA POSYANDU"}, {"id": "15tVrS8SVskIjSV4p16ZVEY30TH_YagZo", "name": "LHK POSYANDU FEB 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/15tVrS8SVskIjSV4p16ZVEY30TH_YagZo/view", "path": "2026"}, {"id": "1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m", "name": "LHK POSYANDU JAN 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1f-UjZfFwcEO6fScrkaNVQb-IxV--_o2m/view", "path": "2026"}, {"id": "1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0", "name": "LHK POSYANDU MAR 2026.docx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1CnGqKn15UtOqh1VIl9wpcq7QIH82nth0/view", "path": "2026"}], "analisa": {"kpi": {"posyandu": 42, "aktif": 42, "desa": 8, "sumber": "POSYANDU AKTIF.xlsx"}, "posyandu": [{"desa": "Kraton", "pos": "Melati 1", "aktif": true}, {"desa": "Kraton", "pos": "Melati 2", "aktif": true}, {"desa": "Kraton", "pos": "Melati 3", "aktif": true}, {"desa": "Kraton", "pos": "Melati 4", "aktif": true}, {"desa": "Kraton", "pos": "Melati 5", "aktif": true}, {"desa": "Kraton", "pos": "Melati 6", "aktif": true}, {"desa": "Kraton", "pos": "Melati 7", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 1", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 2", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 3", "aktif": true}, {"desa": "Gulun", "pos": "Dewi Sartika 4", "aktif": true}, {"desa": "Malang", "pos": "Cut Nyak Dien 1", "aktif": true}, {"desa": "Malang", "pos": "Cut Nyak Dien 2", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 1", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 2", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 3", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 4", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 5", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 6", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 7", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 8", "aktif": true}, {"desa": "Maospati", "pos": "Cut Mutia 9", "aktif": true}, {"desa": "Maospati", "pos": "Merak", "aktif": true}, {"desa": "Maospati", "pos": "Camar", "aktif": true}, {"desa": "Maospati", "pos": "Cendrawasih", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 1", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 2", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 3", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 4", "aktif": true}, {"desa": "Mranggen", "pos": "Pos 5", "aktif": true}, {"desa": "Sempol", "pos": "Larasati 1", "aktif": true}, {"desa": "Sempol", "pos": "Larasati 2", "aktif": true}, {"desa": "Sempol", "pos": "Larasati 3", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 1", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 2", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 3", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 4", "aktif": true}, {"desa": "Sugihwaras", "pos": "Srikandi 5", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 1", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 2", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 3", "aktif": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 4", "aktif": true}], "perDesa": [{"desa": "Maospati", "jumlah": 12}, {"desa": "Kraton", "jumlah": 7}, {"desa": "Mranggen", "jumlah": 5}, {"desa": "Sugihwaras", "jumlah": 5}, {"desa": "Gulun", "jumlah": 4}, {"desa": "Tanjungsepreh", "jumlah": 4}, {"desa": "Sempol", "jumlah": 3}, {"desa": "Malang", "jumlah": 2}]}, "adaData": true, "generated": "21 Oktober 2026 15:47 WIB"};</script>
 <script src="assets/app.js"></script>
 <script src="assets/pages/data-posyandu.js"></script>
 </body>

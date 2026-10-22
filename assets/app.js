@@ -1,5 +1,5 @@
 /* ============================================================================
- * app.js — kerangka bersama semua halaman Dashboard MPM
+ * app.js - kerangka bersama semua halaman Dashboard MPM
  * Tugasnya: menggambar menu, memuat data/<slug>.json, menampilkan KPI,
  * daftar isi folder Drive, dan waktu sinkron. Isi/khusus tiap halaman ada di
  * assets/pages/<slug>.js (window.renderPage) supaya mudah dirawat terpisah.
@@ -16,11 +16,12 @@ const MENU = [
   { slug: 'laporan-kegiatan-dinkes', label: 'Laporan Kegiatan Dinkes',file: 'laporan-kegiatan-dinkes.html' },
   { slug: 'jadwal-promkes',          label: 'Jadwal Promkes',         file: 'jadwal-promkes.html' }
 ];
-const COL = ['#1f6feb','#0f9d58','#e8a33d','#d93025','#7c5cff','#d6348a','#0aa2c0','#8a6d3b'];
+const COL = ['#14594a','#3f7d6b','#8a5a12','#a05a3c','#4f6d7a','#6b5a3e','#7a2f4a','#2f6f8a'];
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 /* ---------- helper tampilan ---------- */
 const esc = s => String(s === null || s === undefined ? '' : s)
+  .replace(/\u2014/g,'\u00b7')
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fnum = n => (n === null || n === undefined || n === '') ? '–' : Number(n).toLocaleString('id-ID');
 const fpct = v => (v === null || v === undefined || isNaN(v)) ? '–' : (Number(v) % 1 ? Number(v).toFixed(1) : Number(v)) + '%';
@@ -29,9 +30,12 @@ const el = id => document.getElementById(id);
 const set = (id, html) => { const e = el(id); if (e) e.innerHTML = html; };
 
 function kpiCards(items){
-  return items.map(k => `<div class="card kpi"><div class="l">${esc(k.label)}</div>
-    <div class="v">${k.raw ? k.value : esc(k.value)}</div>
-    <div class="s">${esc(k.sub || '')}</div></div>`).join('');
+  return items.map((k, i) => {
+    const wide = items.length % 4 === 2 && i >= items.length - 2 ? ' wide' : '';
+    return `<div class="card kpi${wide}"><div class="l">${esc(k.label)}</div>
+    <div class="v${k.small ? ' text' : ''}">${k.raw ? k.value : esc(k.value)}</div>
+    <div class="s">${esc(k.sub || '')}</div></div>`;
+  }).join('');
 }
 function barRows(rows){
   /* rows: {label, value, max, note, color} */
@@ -45,7 +49,7 @@ function barRows(rows){
 }
 function table(cols, rows){
   const nk = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
-  return '<table><thead><tr>' + cols.map(c => `<th class="${c.num ? 'num' : ''}">${esc(c.label)}</th>`).join('') + '</tr></thead><tbody>' +
+  return '<table><thead><tr>' + cols.map(c => `<th scope="col" class="${c.num ? 'num' : ''}">${esc(c.label)}</th>`).join('') + '</tr></thead><tbody>' +
     rows.map(r => {
       const keys = Object.keys(r);
       return '<tr>' + cols.map((c, i) => {
@@ -77,7 +81,7 @@ function matrixBox(cols, rows, cfg){
   rows.forEach(r => {
     h += `<div class="hd" title="${esc(r.label)}">${esc(r.label)}</div>`;
     r.cells.forEach(c => {
-      if (c.v === null || c.v === undefined || c.v === '') h += `<div class="cell" style="background:color-mix(in srgb,var(--fg) 8%,transparent)" title="${esc(c.title || 'data belum ada')}"></div>`;
+      if (c.v === null || c.v === undefined || c.v === '') h += `<div class="cell" style="background:var(--surface-2)" title="${esc(c.title || 'data belum ada')}"></div>`;
       else if (c.color) h += `<div class="cell" style="background:${c.color}" title="${esc(c.title || c.v)}">${esc(c.text !== undefined ? c.text : c.v)}</div>`;
       else h += `<div title="${esc(c.title || '')}">${c.html || esc(c.v)}</div>`;
     });
@@ -90,7 +94,7 @@ function folderTree(node, depth){
   let h = '';
   if (depth > 0 || kids.length){
     h += `<div class="fld" style="padding-left:${depth * 14}px">
-      ${depth ? '📂' : '🗂️'} <a href="${node.url}" target="_blank" rel="noopener">${esc(node.name)}</a>
+      <a href="${node.url}" target="_blank" rel="noopener">${esc(node.name)}</a>
       <span class="cnt">(${files.length} berkas langsung${kids.length ? ', ' + kids.length + ' subfolder' : ''})</span></div>`;
   }
   files.forEach(f => {
@@ -103,22 +107,22 @@ function folderTree(node, depth){
   kids.forEach(k => { h += folderTree(k, depth + 1); });
   return h;
 }
-const driveBtn = (url, label) => `<a class="btn primary" href="${url}" target="_blank" rel="noopener">📁 ${esc(label || 'Buka folder di Google Drive')}</a>`;
-/* keterangan sumber data untuk setiap panel — supaya mudah dicek ke berkas Excel aslinya */
-const srcLine = txt => `<p class="src">📄 Sumber data: ${txt}</p>`;
+const driveBtn = (url, label) => `<a class="btn" href="${url}" target="_blank" rel="noopener">${esc(label || 'Buka folder Drive')}</a>`;
+/* keterangan sumber data untuk setiap panel, supaya mudah dicek ke berkas Excel aslinya */
+const srcLine = txt => `<p class="src">Sumber data: ${txt}</p>`;
 
 /* sumber data untuk baris KPI di tiap halaman (KPI berada di luar kartu) */
 const KPI_SRC = {
   'index': 'hasil pembacaan otomatis <code>tools/sync.py</code> atas 8 folder Google Drive MPM + kalender Promkes',
   'smd-mmd': 'berkas rekap SMD per desa di folder <b>SMD MMD</b> dan <code>KELENGKAPAN SMD.xlsx</code>',
-  'laporan-posyandu': '<code>KELENGKAPAN LHK.xlsx</code> — folder <b>LAPORAN POSYANDU</b>',
-  'ruk': '<code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> — folder <b>RUK</b>',
+  'laporan-posyandu': '<code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU</b>',
+  'ruk': '<code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> · folder <b>RUK</b>',
   'dokumentasi': 'folder <b>DOKUMENTASI</b> di Google Drive (belum ada berkas)',
-  'data-posyandu': '<code>POSYANDU AKTIF.xlsx</code> — folder <b>DATA POSYANDU</b>',
-  'data-kader': '<code>Data Kader .xlsx</code> — folder <b>DATA KADER</b>',
+  'data-posyandu': '<code>POSYANDU AKTIF.xlsx</code> · folder <b>DATA POSYANDU</b>',
+  'data-kader': '<code>Data Kader .xlsx</code> · folder <b>DATA KADER</b>',
   'spj-bok': 'folder <b>SPJ BOK</b> di Google Drive (belum ada berkas)',
-  'laporan-kegiatan-dinkes': '<code>KEGIATAN DINKES.xlsx</code> — folder <b>LAPORAN KEGIATAN DINKES</b>',
-  'jadwal-promkes': 'kalender publik Google <b>dhellayaamanda2@gmail.com</b> — bukan berkas Excel'
+  'laporan-kegiatan-dinkes': '<code>KEGIATAN DINKES.xlsx</code> · folder <b>LAPORAN KEGIATAN DINKES</b>',
+  'jadwal-promkes': 'kalender publik Google <b>dhellayaamanda2@gmail.com</b> · bukan berkas Excel'
 };
 
 /* ---------- tombol Sinkron (header) ----------
@@ -131,8 +135,8 @@ const SYNC_URL = '/api/sync';
 function drawSync(){
   const host = el('drivebtn');
   if (!host) return;
-  host.innerHTML = `<button class="btn primary" id="btnsync" type="button">⟳ Sinkron sekarang</button>
-    <div class="muted" id="synctime" style="font-size:11px;margin-top:4px;text-align:right">Terakhir sinkron: memuat…</div>`;
+  host.innerHTML = `<button class="btn primary" id="btnsync" type="button">Sinkronkan data</button>
+    <div class="muted" id="synctime">Terakhir sinkron: memuat…</div>`;
   const btn = el('btnsync');
   if (btn) btn.onclick = () => jalankanSinkron();
 }
@@ -152,7 +156,7 @@ async function jalankanSinkron(){
       const kode = prompt('Kode sinkronisasi:');
       if (kode){ try { localStorage.setItem('mpm_sync', kode); } catch (e) {} }
       if (btn){ btn.disabled = false; btn.textContent = label; }
-      set('synctime', 'Kode dimasukkan — tekan tombol Sinkron lagi.');
+      set('synctime', 'Kode dimasukkan. Tekan tombol Sinkronkan data lagi.');
       return;
     }
     if (!r.ok) throw new Error(j.detail || j.error || ('HTTP ' + r.status));
@@ -173,7 +177,7 @@ async function jalankanSinkron(){
     try { st = await (await fetch(SYNC_URL + '?t=' + Date.now())).json(); } catch (e) {}
     const umur = Math.round((Date.now() - mulai) / 1000);
     const mulaiRun = st && st.mulai ? Date.parse(st.mulai) : 0;
-    /* setelah dispatch, GitHub bisa masih menampilkan run sebelumnya — jangan anggap selesai */
+    /* setelah dispatch, GitHub bisa masih menampilkan run sebelumnya; jangan anggap selesai */
     const basi = mulaiRun > 0 && mulaiRun < batas;
     if (st && st.state === 'running' && !basi){
       set('synctime', `Sinkronisasi berjalan… ${umur}s (${esc(st.detail || '')})`);
@@ -182,7 +186,7 @@ async function jalankanSinkron(){
       if (btn){ btn.disabled = false; btn.textContent = label; }
       set('synctime', 'Sinkronisasi gagal: ' + esc(String(st.detail || '').slice(0, 160)));
     } else if (st && !basi && st.state === 'done'){
-      set('synctime', `Sinkron selesai dalam ${umur}s — memuat ulang…`);
+      set('synctime', `Sinkron selesai dalam ${umur}s. Memuat ulang…`);
       setTimeout(() => location.reload(), 800);
     } else if (umur > 300){
       if (btn){ btn.disabled = false; btn.textContent = label; }
@@ -213,8 +217,14 @@ async function loadJSON(path){
 /* ---------- kerangka halaman ---------- */
 function drawFrame(active){
   const host = el('navmenu');
-  if (host) host.innerHTML = MENU.map(m =>
-    `<a href="${m.file}" class="${m.slug === active ? 'on' : ''}">${esc(m.label)}</a>`).join('');
+  if (!host) return;
+  host.innerHTML = MENU.map(m =>
+    `<a href="${m.file}" class="${m.slug === active ? 'on' : ''}"${m.slug === active ? ' aria-current="page"' : ''}>${esc(m.label)}</a>`).join('');
+  /* di layar sempit menu bisa digeser: bawa butir aktif ke tengah */
+  if (host.querySelector){
+    const aktif = host.querySelector('a.on');
+    if (aktif) host.scrollLeft = Math.max(0, aktif.offsetLeft - (host.clientWidth - aktif.offsetWidth) / 2);
+  }
 }
 
 async function boot(){
@@ -227,20 +237,25 @@ async function boot(){
       window.renderPage(site, null);
       const kh = el('kpis');
       if (kh && KPI_SRC.index) kh.innerHTML = kh.innerHTML + srcLine(KPI_SRC.index);
+      const drive = site.folders.filter(f => f.id);
+      set('treehost', drive.map(f => `<div class="fld"><a href="${f.url}" target="_blank" rel="noopener">${esc(f.menu)}</a>
+        <span class="cnt">(${fnum(f.berkas)} berkas${f.subfolder ? ', ' + fnum(f.subfolder) + ' subfolder' : ''})</span></div>`).join(''));
+      set('filecount', fnum(site.folders.reduce((a, f) => a + (f.jenis === 'kalender' ? 0 : f.berkas), 0)) + ' berkas');
       set('synced', 'Data disinkronkan: <b>' + esc(site.generated) + '</b>');
       set('synctime', 'Terakhir sinkron: <b>' + esc(site.generated) + '</b>');
       return;
     }
     const d = await loadJSON('data/' + page + '.json');
-    document.title = d.menu + ' — Dashboard MPM Maospati';
+    document.title = d.menu + ' · Dashboard MPM Maospati';
     set('pagetitle', esc(d.menu));
     set('pagesub', esc(d.subjudul) + ' · ' + esc(d.deskripsi));
     if (d.folder && d.folder.kalender){
       /* halaman berbasis kalender publik, bukan folder Drive */
-      set('drivebtn2', `<a class="btn primary" href="${d.folder.url}" target="_blank" rel="noopener">📅 Buka di Google Calendar</a>`);
+      set('drivebtn2', `<a class="btn" href="${d.folder.url}" target="_blank" rel="noopener">Buka kalender</a>`);
       set('pagemeta', `kalender publik: <b>${esc(d.folder.name)}</b> · <b>${fnum(d.statistik.berkas)}</b> agenda terbaca`);
       set('treehost', `<p class="muted">Halaman ini bersumber dari kalender publik Google, bukan folder Drive.</p>`);
       set('treecard', 'Sumber: Google Calendar');
+      set('filecount', 'kalender');
     } else {
       set('drivebtn2', driveBtn(d.folder.url));
       set('pagemeta', `<b>${fnum(d.statistik.berkas)}</b> berkas · <b>${fnum(d.statistik.subfolder)}</b> subfolder ·
@@ -259,13 +274,13 @@ async function boot(){
         e.innerHTML += ' &middot; terdeteksi: <b>' + esc(det) + '</b>';
       });
     }
-    set('synced', 'Data disinkronkan: <b>' + esc(d.generated || '—') + '</b>');
-    set('synctime', 'Terakhir sinkron: <b>' + esc(d.generated || '—') + '</b>');
+    set('synced', 'Data disinkronkan: <b>' + esc(d.generated || '-') + '</b>');
+    set('synctime', 'Terakhir sinkron: <b>' + esc(d.generated || '-') + '</b>');
   } catch (e){
     const b = el('banner');
     if (b){
       b.classList.add('on');
-      b.innerHTML = '⚠️ Gagal memuat data (' + esc(e.message) + '). Jalankan <code>python tools/sync.py</code> lalu buka situs lewat web server: <code>python tools/serve.py</code> (bukan dengan klik dua kali berkas HTML).';
+      b.innerHTML = 'Gagal memuat data (' + esc(e.message) + '). Jalankan <code>python tools/sync.py --refresh</code> lalu buka situs lewat web server: <code>python tools/serve.py</code> (bukan dengan klik dua kali berkas HTML).';
     }
     console.error(e);
   }

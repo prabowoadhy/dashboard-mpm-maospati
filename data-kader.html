@@ -3,16 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Data Kader — Dashboard MPM Maospati</title>
+<meta name="theme-color" content="#f7f4ec"/>
+<title>Data Kader · Dashboard MPM Maospati</title>
 <meta name="description" content="Rekap jumlah kader posyandu per posyandu dan per desa (tanpa data pribadi)"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="data-kader">
+<a class="skip" href="#main">Langsung ke isi</a>
 <div class="topwrap">
   <header class="top">
     <div class="inner">
       <div class="brand">
-        <div class="logo">MPM</div>
+        <div class="logo" aria-hidden="true">MPM</div>
         <div>
           <h1>Dashboard MPM Maospati</h1>
           <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
@@ -21,10 +23,10 @@
       <div id="drivebtn"></div>
     </div>
   </header>
-  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+  <nav class="menu" aria-label="Menu utama"><div class="navinner" id="navmenu"></div></nav>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main">
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">Data Kader</h2>
@@ -38,36 +40,40 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Rekap vs Daftar Nama<span>selisih yang perlu dicek</span></h3><div id="c-selisih"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>Data Kader .xlsx</code> — folder <b>DATA KADER</b>: sheet <b>REKAP JUMLAH KADER</b> (jumlah resmi) vs sheet <b>NAMA KADER</b> (hasil form)</p></div><div class="card"><h3>Kader per Desa<span>rekap / nama terdaftar</span></h3><div id="c-desa"></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER (kolom DESA/KEL, POS, KADER) &amp; sheet NAMA KADER (kolom POSYANDU DESA)</p></div><div class="card"><h3>Jenis Kader<span>sebaran jenis</span></h3><div id="c-jenis"></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet <b>NAMA KADER</b>, kolom <b>JENIS KADER</b></p></div><div class="card" style="grid-column:1/-1"><h3>Ringkasan per Desa<span>sinkron atau belum</span></h3><div class="scroll"><table id="t-kader"></table></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER</p></div><div class="card" style="grid-column:1/-1"><h3>Rincian per Posyandu<span>jumlah kader</span></h3><div class="scroll"><table id="t-perpos"></table></div><p class="src">📄 Sumber data: <code>Data Kader .xlsx</code> — sheet REKAP JUMLAH KADER (satu baris = satu posyandu; baris <b>PUSTU</b> tanpa nomor tetap dihitung)</p></div></div>
+<section class="card"><h3>Rekap vs Daftar Nama<span>selisih yang perlu dicek</span></h3><div id="c-selisih"></div><p class="src" data-auto-sumber="1">Sumber data: <code>Data Kader .xlsx</code> · folder <b>DATA KADER</b>: sheet <b>REKAP JUMLAH KADER</b> (jumlah resmi) vs sheet <b>NAMA KADER</b> (hasil form)</p></section><section class="card"><h3>Kader per Desa<span>rekap / nama terdaftar</span></h3><div id="c-desa"></div><p class="src">Sumber data: <code>Data Kader .xlsx</code> · sheet REKAP JUMLAH KADER (kolom DESA/KEL, POS, KADER) &amp; sheet NAMA KADER (kolom POSYANDU DESA)</p></section><section class="card"><h3>Jenis Kader<span>sebaran jenis</span></h3><div id="c-jenis"></div><p class="src">Sumber data: <code>Data Kader .xlsx</code> · sheet <b>NAMA KADER</b>, kolom <b>JENIS KADER</b></p></section><section class="card full"><h3>Ringkasan per Desa<span>sinkron atau belum</span></h3><div class="scroll"><table id="t-kader"></table></div><p class="src">Sumber data: <code>Data Kader .xlsx</code> · sheet REKAP JUMLAH KADER</p></section><section class="card full"><h3>Rincian per Posyandu<span>jumlah kader</span></h3><div class="scroll"><table id="t-perpos"></table></div><p class="src">Sumber data: <code>Data Kader .xlsx</code> · sheet REKAP JUMLAH KADER (satu baris = satu posyandu; baris <b>PUSTU</b> tanpa nomor tetap dihitung)</p></section></div>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
-    <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
-    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
-  </div>
+  <details class="utility">
+    <summary><span id="treecard">Isi folder Google Drive</span> <span id="filecount">memuat</span></summary>
+    <div class="body">
+      <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
+      <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+      folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    </div>
+  </details>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
-    <ul class="tl">
-      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
-      beserta folder tempat berkas itu berada di Google Drive.</li>
-      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
-      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
-      halaman menampilkan angka terbaru.</li>
-      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
-      "Saran perbaikan data".</li>
-    </ul>
-  </div>
+  <details class="utility">
+    <summary>Cara membaca &amp; memperbaiki data</summary>
+    <div class="body">
+      <ul class="tl">
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
+        beserta folder tempat berkas itu berada di Google Drive.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        halaman menampilkan angka terbaru.</li>
+        <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+        "Saran perbaikan data".</li>
+      </ul>
+    </div>
+  </details>
 
   <footer class="foot">
     <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
+    <span>UPTD Puskesmas Maospati</span>
   </footer>
-</div>
+</main>
 
-<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["data-kader"] = {"slug": "data-kader", "menu": "Data Kader", "subjudul": "Data kader posyandu", "deskripsi": "Rekap jumlah kader per posyandu", "folder": {"id": "1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "url": "https://drive.google.com/drive/folders/1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "name": "DATA KADER"}, "statistik": {"berkas": 1, "subfolder": 0}, "struktur": {"name": "DATA KADER", "id": "1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "url": "https://drive.google.com/drive/folders/1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "files": [{"id": "1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB", "name": "Data Kader .xlsx", "kind": "file", "modified": "12:42 am", "url": "https://drive.google.com/file/d/1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB/view"}], "children": []}, "files": [{"id": "1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB", "name": "Data Kader .xlsx", "kind": "file", "modified": "12:42 am", "url": "https://drive.google.com/file/d/1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB/view", "path": "DATA KADER"}], "analisa": {"kpi": {"total": 241, "totalSheet": 241, "pustu": 6, "daftarNama": 241, "daftarUnik": 240, "duplikat": 1, "posyandu": 42, "rataPerPos": 5.7, "sumber": "Data Kader .xlsx"}, "cek": {"rekap": 241, "rekapLembar": 241, "form": 241, "formUnik": 240, "duplikat": 1, "selisih": 0, "selisihLembar": 0}, "perPos": [{"desa": "Kraton", "pos": "Melati 1", "kader": 5}, {"desa": "Kraton", "pos": "Melati 2", "kader": 8}, {"desa": "Kraton", "pos": "Melati 3", "kader": 5}, {"desa": "Kraton", "pos": "Melati 4", "kader": 6}, {"desa": "Kraton", "pos": "Melati 5", "kader": 8}, {"desa": "Kraton", "pos": "Melati 6", "kader": 5}, {"desa": "Kraton", "pos": "Melati 7", "kader": 5}, {"desa": "Gulun", "pos": "Dewi Sartika 1", "kader": 8}, {"desa": "Gulun", "pos": "Dewi Sartika 2", "kader": 7}, {"desa": "Gulun", "pos": "Dewi Sartika 3", "kader": 6}, {"desa": "Gulun", "pos": "Dewi Sartika 4", "kader": 8}, {"desa": "Malang", "pos": "Cut Nyak Dien 1", "kader": 8}, {"desa": "Malang", "pos": "Cut Nyak Dien 2", "kader": 10}, {"desa": "Malang", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Maospati", "pos": "Cut Mutia 1", "kader": 3}, {"desa": "Maospati", "pos": "Cut Mutia 2", "kader": 6}, {"desa": "Maospati", "pos": "Cut Mutia 3", "kader": 5}, {"desa": "Maospati", "pos": "Cut Mutia 4", "kader": 5}, {"desa": "Maospati", "pos": "Cut Mutia 5", "kader": 1}, {"desa": "Maospati", "pos": "Cut Mutia 6", "kader": 4}, {"desa": "Maospati", "pos": "Cut Mutia 7", "kader": 2}, {"desa": "Maospati", "pos": "Cut Mutia 8", "kader": 2}, {"desa": "Maospati", "pos": "Cut Mutia 9", "kader": 4}, {"desa": "Maospati", "pos": "Merak", "kader": 5}, {"desa": "Maospati", "pos": "Camar", "kader": 4}, {"desa": "Maospati", "pos": "Cendrawasih", "kader": 5}, {"desa": "Mranggen", "pos": "Pos 1", "kader": 3}, {"desa": "Mranggen", "pos": "Pos 2", "kader": 2}, {"desa": "Mranggen", "pos": "Pos 3", "kader": 2}, {"desa": "Mranggen", "pos": "Pos 4", "kader": 6}, {"desa": "Mranggen", "pos": "Pos 5", "kader": 2}, {"desa": "Sempol", "pos": "Larasati 1", "kader": 11}, {"desa": "Sempol", "pos": "Larasati 2", "kader": 4}, {"desa": "Sempol", "pos": "Larasati 3", "kader": 6}, {"desa": "Sugihwaras", "pos": "Srikandi 1", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 2", "kader": 6}, {"desa": "Sugihwaras", "pos": "Srikandi 3", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 4", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 5", "kader": 5}, {"desa": "Sugihwaras", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 1", "kader": 7}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 2", "kader": 9}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 3", "kader": 8}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 4", "kader": 8}, {"desa": "Tanjungsepreh", "pos": "Pustu", "kader": 2, "tambahan": true}], "pustu": [{"desa": "Malang", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Sugihwaras", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Tanjungsepreh", "pos": "Pustu", "kader": 2, "tambahan": true}], "perDesa": [{"desa": "Maospati", "kader": 46, "nama": 46, "selisih": 0}, {"desa": "Kraton", "kader": 42, "nama": 42, "selisih": 0}, {"desa": "Sugihwaras", "kader": 34, "nama": 34, "selisih": 0}, {"desa": "Tanjungsepreh", "kader": 34, "nama": 34, "selisih": 0}, {"desa": "Gulun", "kader": 29, "nama": 29, "selisih": 0}, {"desa": "Sempol", "kader": 21, "nama": 21, "selisih": 0}, {"desa": "Malang", "kader": 20, "nama": 20, "selisih": 0}, {"desa": "Mranggen", "kader": 15, "nama": 15, "selisih": 0}], "jenis": [{"jenis": "Kader Posyandu", "jumlah": 241}], "privasi": "Ringkasan ini hanya memuat JUMLAH. Nama/alamat/no HP kader tidak dimuat ke dashboard publik."}, "adaData": true, "generated": "21 October 2026 15:47 WIB"};</script>
+<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["data-kader"] = {"slug": "data-kader", "menu": "Data Kader", "subjudul": "Data kader posyandu", "deskripsi": "Rekap jumlah kader per posyandu", "folder": {"id": "1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "url": "https://drive.google.com/drive/folders/1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "name": "DATA KADER"}, "statistik": {"berkas": 1, "subfolder": 0}, "struktur": {"name": "DATA KADER", "id": "1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "url": "https://drive.google.com/drive/folders/1ANnRWgVu15SUEsVssE5afvYzzHpgKLgl", "files": [{"id": "1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB", "name": "Data Kader .xlsx", "kind": "file", "modified": "12:42 am", "url": "https://drive.google.com/file/d/1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB/view"}], "children": []}, "files": [{"id": "1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB", "name": "Data Kader .xlsx", "kind": "file", "modified": "12:42 am", "url": "https://drive.google.com/file/d/1zSv50AeJG_EDvxZMdMz8OIgBFwzdjjdB/view", "path": "DATA KADER"}], "analisa": {"kpi": {"total": 242, "totalSheet": 242, "pustu": 6, "daftarNama": 241, "daftarUnik": 240, "duplikat": 1, "posyandu": 42, "rataPerPos": 5.8, "sumber": "Data Kader .xlsx"}, "cek": {"rekap": 242, "rekapLembar": 242, "form": 241, "formUnik": 240, "duplikat": 1, "selisih": -1, "selisihLembar": -1}, "perPos": [{"desa": "Kraton", "pos": "Melati 1", "kader": 5}, {"desa": "Kraton", "pos": "Melati 2", "kader": 8}, {"desa": "Kraton", "pos": "Melati 3", "kader": 5}, {"desa": "Kraton", "pos": "Melati 4", "kader": 6}, {"desa": "Kraton", "pos": "Melati 5", "kader": 8}, {"desa": "Kraton", "pos": "Melati 6", "kader": 5}, {"desa": "Kraton", "pos": "Melati 7", "kader": 5}, {"desa": "Gulun", "pos": "Dewi Sartika 1", "kader": 8}, {"desa": "Gulun", "pos": "Dewi Sartika 2", "kader": 7}, {"desa": "Gulun", "pos": "Dewi Sartika 3", "kader": 6}, {"desa": "Gulun", "pos": "Dewi Sartika 4", "kader": 8}, {"desa": "Malang", "pos": "Cut Nyak Dien 1", "kader": 8}, {"desa": "Malang", "pos": "Cut Nyak Dien 2", "kader": 10}, {"desa": "Malang", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Maospati", "pos": "Cut Mutia 1", "kader": 3}, {"desa": "Maospati", "pos": "Cut Mutia 2", "kader": 6}, {"desa": "Maospati", "pos": "Cut Mutia 3", "kader": 5}, {"desa": "Maospati", "pos": "Cut Mutia 4", "kader": 5}, {"desa": "Maospati", "pos": "Cut Mutia 5", "kader": 1}, {"desa": "Maospati", "pos": "Cut Mutia 6", "kader": 4}, {"desa": "Maospati", "pos": "Cut Mutia 7", "kader": 2}, {"desa": "Maospati", "pos": "Cut Mutia 8", "kader": 2}, {"desa": "Maospati", "pos": "Cut Mutia 9", "kader": 4}, {"desa": "Maospati", "pos": "Merak", "kader": 5}, {"desa": "Maospati", "pos": "Camar", "kader": 4}, {"desa": "Maospati", "pos": "Cendrawasih", "kader": 5}, {"desa": "Mranggen", "pos": "Pos 1", "kader": 3}, {"desa": "Mranggen", "pos": "Pos 2", "kader": 2}, {"desa": "Mranggen", "pos": "Pos 3", "kader": 2}, {"desa": "Mranggen", "pos": "Pos 4", "kader": 6}, {"desa": "Mranggen", "pos": "Pos 5", "kader": 2}, {"desa": "Sempol", "pos": "Larasati 1", "kader": 11}, {"desa": "Sempol", "pos": "Larasati 2", "kader": 4}, {"desa": "Sempol", "pos": "Larasati 3", "kader": 6}, {"desa": "Sugihwaras", "pos": "Srikandi 1", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 2", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 3", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 4", "kader": 7}, {"desa": "Sugihwaras", "pos": "Srikandi 5", "kader": 5}, {"desa": "Sugihwaras", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 1", "kader": 7}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 2", "kader": 9}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 3", "kader": 8}, {"desa": "Tanjungsepreh", "pos": "Kilisuci 4", "kader": 8}, {"desa": "Tanjungsepreh", "pos": "Pustu", "kader": 2, "tambahan": true}], "pustu": [{"desa": "Malang", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Sugihwaras", "pos": "Pustu", "kader": 2, "tambahan": true}, {"desa": "Tanjungsepreh", "pos": "Pustu", "kader": 2, "tambahan": true}], "perDesa": [{"desa": "Maospati", "kader": 46, "nama": 46, "selisih": 0}, {"desa": "Kraton", "kader": 42, "nama": 42, "selisih": 0}, {"desa": "Sugihwaras", "kader": 35, "nama": 34, "selisih": -1}, {"desa": "Tanjungsepreh", "kader": 34, "nama": 34, "selisih": 0}, {"desa": "Gulun", "kader": 29, "nama": 29, "selisih": 0}, {"desa": "Sempol", "kader": 21, "nama": 21, "selisih": 0}, {"desa": "Malang", "kader": 20, "nama": 20, "selisih": 0}, {"desa": "Mranggen", "kader": 15, "nama": 15, "selisih": 0}], "jenis": [{"jenis": "Kader Posyandu", "jumlah": 241}], "privasi": "Ringkasan ini hanya memuat JUMLAH. Nama/alamat/no HP kader tidak dimuat ke dashboard publik."}, "adaData": true, "generated": "21 Oktober 2026 15:47 WIB"};</script>
 <script src="assets/app.js"></script>
 <script src="assets/pages/data-kader.js"></script>
 </body>

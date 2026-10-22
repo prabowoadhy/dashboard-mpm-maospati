@@ -1,4 +1,4 @@
-/* Data Kader — rekap jumlah kader (tanpa data pribadi) */
+/* Data Kader · rekap jumlah kader (tanpa data pribadi) */
 window.renderPage = function(a){
   const k = a.kpi || {}, perPos = a.perPos || [], perDesa = a.perDesa || [], jenis = a.jenis || [];
   const pustu = k.pustu || 0, duplikat = k.duplikat || 0;
@@ -20,7 +20,7 @@ window.renderPage = function(a){
     : '';
   const status = selisih === 0
     ? '<li class="ok">Jumlah rekap dan daftar form sudah <b>sama</b>.</li>'
-    : `<li>Rekap posyandu <b>${fnum(k.total)}</b> kader, daftar form <b>${fnum(k.daftarNama)}</b> nama — selisih <b>${selisih > 0 ? '+' : ''}${fnum(selisih)}</b>.</li>`
+    : `<li>Rekap posyandu <b>${fnum(k.total)}</b> kader, daftar form <b>${fnum(k.daftarNama)}</b> nama · selisih <b>${selisih > 0 ? '+' : ''}${fnum(selisih)}</b>.</li>`
       + (daftarBeda ? `<li>Selisih per desa: ${daftarBeda}.</li>` : '');
   set('c-selisih', `<ul class="tl">
     ${status}

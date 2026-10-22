@@ -1,18 +1,18 @@
-/* Dokumentasi — galeri berkas dokumentasi kegiatan (folder ini masih kosong) */
+/* Dokumentasi · galeri berkas dokumentasi kegiatan (folder ini masih kosong) */
 window.renderPage = function(a, d){
   const files = (d && d.files) || [];
   set('kpis', kpiCards([
     { label: 'Berkas dokumentasi', value: files.length, sub: 'foto, laporan, atau berkas lain' },
     { label: 'Subfolder', value: (d && d.statistik.subfolder) || 0, sub: 'mis. per kegiatan / per bulan' },
-    { label: 'Status', value: files.length ? 'Terisi' : 'Belum ada isi', sub: files.length ? 'siap ditampilkan' : 'folder masih kosong di Drive' },
-    { label: 'Sumber', value: 'Google Drive', sub: 'folder Dokumentasi' },
+    { label: 'Status', value: files.length ? 'Terisi' : 'Belum ada isi', sub: files.length ? 'siap ditampilkan' : 'folder masih kosong di Drive', small: true },
+    { label: 'Sumber', value: 'Google Drive', sub: 'folder Dokumentasi', small: true },
   ]));
 
   if (!files.length){
     set('c-isi', `<div class="empty">
       <p style="margin:0 0 8px"><b>Folder Dokumentasi masih kosong.</b></p>
-      <p style="margin:0">Setelah berkas/foto diunggah ke folder ini, jalankan <code>python tools/sync.py</code> —
-      daftar berkas akan otomatis muncul di halaman ini beserta tautannya ke Google Drive.</p>
+      <p style="margin:0">Setelah berkas/foto diunggah ke folder ini, jalankan <code>python tools/sync.py</code>.
+      Daftar berkas akan otomatis muncul di halaman ini beserta tautannya ke Google Drive.</p>
     </div>`);
   } else {
     set('c-isi', (d.struktur ? '' : '') + '');

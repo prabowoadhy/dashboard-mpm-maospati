@@ -1,5 +1,5 @@
 """
-sync.py — mesin data Dashboard MPM.
+sync.py - mesin data Dashboard MPM.
 
 Membaca 8 folder Google Drive "MPM Maospati" (lewat endpoint publik embeddedfolderview),
 mengunduh & menganalisis berkas .xlsx di dalamnya, lalu menulis SATU berkas JSON per halaman:
@@ -63,7 +63,7 @@ CALENDAR = {
     "slug": "jadwal-promkes",
     "menu": "Jadwal Promkes",
     "subjudul": "Jadwal kegiatan promosi kesehatan (kalender publik)",
-    "deskripsi": "Kalender kegiatan Promkes — agenda SMD/MMD, posyandu, dan penyuluhan",
+    "deskripsi": "Kalender kegiatan Promkes - agenda SMD/MMD, posyandu, dan penyuluhan",
     "src": "dhellayaamanda2@gmail.com",
     "embed": ("https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com"
               "&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1"),
@@ -177,8 +177,11 @@ def load_book(fid, name):
 
 BULAN = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]
 
+def stempel(dt):
+    return f"{dt.day} {BULAN[dt.month - 1]} {dt.year} {dt:%H:%M} WIB"
+
 def write(slug, payload):
-    payload["generated"] = datetime.now(timezone(timedelta(hours=7))).strftime("%d %B %Y %H:%M WIB")
+    payload["generated"] = stempel(datetime.now(timezone(timedelta(hours=7))))
     json.dump(payload, open(os.path.join(DATA, slug + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
     print(f"  -> data/{slug}.json")
 
@@ -451,7 +454,7 @@ def analisa_dinkes(root, files):
 def analisa_umum(root, files, jenis):
     return {"kpi": {"berkas": len(files), "folder": len(root["children"]),
                     "jenis": len({os.path.splitext(f["name"])[1].lower() for f in files if "." in f["name"]}),
-                    "sumber": "—" if not files else "struktur folder"},
+                    "sumber": "-" if not files else "struktur folder"},
             "catatan": jenis}
 
 # ============================ analisa kalender Promkes ============================
@@ -538,7 +541,7 @@ def analisa_kalender():
     return {
         "kpi": {"total": len(agenda), "mendatang": len(mendatang), "dekat30": len(dekat),
                 "bulanIni": len(ini),
-                "berikutnya": (mendatang[0]["tanggal"] + " — " + mendatang[0]["nama"]) if mendatang else "belum ada agenda",
+                "berikutnya": (mendatang[0]["tanggal"] + " - " + mendatang[0]["nama"]) if mendatang else "belum ada agenda",
                 "sumber": f"Kalender publik Google ({CALENDAR['src']})"},
         "agenda": mendatang,
         "semuaAgenda": agenda,
@@ -634,7 +637,7 @@ def main():
         "keterangan": f"{ana_k['kpi']['dekat30']} agenda 30 hari ke depan",
     })
 
-    site["generated"] = datetime.now(timezone(timedelta(hours=7))).strftime("%d %B %Y %H:%M WIB")
+    site["generated"] = stempel(datetime.now(timezone(timedelta(hours=7))))
     json.dump(site, open(os.path.join(DATA, "site.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("  -> data/site.json\nSelesai.")
 

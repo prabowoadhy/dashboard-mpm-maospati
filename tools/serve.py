@@ -1,5 +1,5 @@
 """
-serve.py — menjalankan dashboard di komputer sendiri + tombol "Sinkron" di header.
+serve.py - menjalankan dashboard di komputer sendiri + tombol "Sinkron" di header.
 
     python tools/serve.py            # http://127.0.0.1:8080
     python tools/serve.py 9000

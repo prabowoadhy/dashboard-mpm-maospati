@@ -1,4 +1,4 @@
-"""check_pages.py — verifikasi statis: setiap id yang dipakai skrip halaman harus ada di HTML-nya."""
+"""check_pages.py - verifikasi statis: setiap id yang dipakai skrip halaman harus ada di HTML-nya."""
 import re, os, json, glob, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

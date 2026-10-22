@@ -3,16 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>SPJ BOK — Dashboard MPM Maospati</title>
+<meta name="theme-color" content="#f7f4ec"/>
+<title>SPJ BOK · Dashboard MPM Maospati</title>
 <meta name="description" content="Berkas pertanggungjawaban Bantuan Operasional Kesehatan"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="spj-bok">
+<a class="skip" href="#main">Langsung ke isi</a>
 <div class="topwrap">
   <header class="top">
     <div class="inner">
       <div class="brand">
-        <div class="logo">MPM</div>
+        <div class="logo" aria-hidden="true">MPM</div>
         <div>
           <h1>Dashboard MPM Maospati</h1>
           <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
@@ -21,10 +23,10 @@
       <div id="drivebtn"></div>
     </div>
   </header>
-  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+  <nav class="menu" aria-label="Menu utama"><div class="navinner" id="navmenu"></div></nav>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main">
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">SPJ BOK</h2>
@@ -38,36 +40,40 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card" style="grid-column:1/-1"><h3>Isi Folder<span>berkas SPJ BOK</span></h3><div id="c-isi"></div><p class="src">📄 Sumber data: folder <b>SPJ BOK</b> di Google Drive (belum ada berkas)</p></div><div class="card" style="grid-column:1/-1"><h3>Saran Struktur Berkas<span>supaya ringkasan bisa otomatis</span></h3><div id="c-saran"></div><p class="src">📄 Sumber data: rekomendasi — belum ada berkas sumber</p></div></div>
+<section class="card full"><h3>Isi Folder<span>berkas SPJ BOK</span></h3><div id="c-isi"></div><p class="src">Sumber data: folder <b>SPJ BOK</b> di Google Drive (belum ada berkas)</p></section><section class="card full"><h3>Saran Struktur Berkas<span>supaya ringkasan bisa otomatis</span></h3><div id="c-saran"></div><p class="src">Sumber data: rekomendasi · belum ada berkas sumber</p></section></div>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
-    <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
-    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
-  </div>
+  <details class="utility">
+    <summary><span id="treecard">Isi folder Google Drive</span> <span id="filecount">memuat</span></summary>
+    <div class="body">
+      <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
+      <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+      folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    </div>
+  </details>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
-    <ul class="tl">
-      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
-      beserta folder tempat berkas itu berada di Google Drive.</li>
-      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
-      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
-      halaman menampilkan angka terbaru.</li>
-      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
-      "Saran perbaikan data".</li>
-    </ul>
-  </div>
+  <details class="utility">
+    <summary>Cara membaca &amp; memperbaiki data</summary>
+    <div class="body">
+      <ul class="tl">
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
+        beserta folder tempat berkas itu berada di Google Drive.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        halaman menampilkan angka terbaru.</li>
+        <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+        "Saran perbaikan data".</li>
+      </ul>
+    </div>
+  </details>
 
   <footer class="foot">
     <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
+    <span>UPTD Puskesmas Maospati</span>
   </footer>
-</div>
+</main>
 
-<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["spj-bok"] = {"slug": "spj-bok", "menu": "SPJ BOK", "subjudul": "SPJ Bantuan Operasional Kesehatan", "deskripsi": "Berkas pertanggungjawaban BOK", "folder": {"id": "1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "url": "https://drive.google.com/drive/folders/1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "name": "SPJ BOK"}, "statistik": {"berkas": 0, "subfolder": 0}, "struktur": {"name": "SPJ BOK", "id": "1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "url": "https://drive.google.com/drive/folders/1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "files": [], "children": []}, "files": [], "analisa": {"kpi": {"berkas": 0, "folder": 0, "jenis": 0, "sumber": "—"}, "catatan": "belum ada berkas"}, "adaData": false, "generated": "21 October 2026 15:47 WIB"};</script>
+<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["spj-bok"] = {"slug": "spj-bok", "menu": "SPJ BOK", "subjudul": "SPJ Bantuan Operasional Kesehatan", "deskripsi": "Berkas pertanggungjawaban BOK", "folder": {"id": "1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "url": "https://drive.google.com/drive/folders/1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "name": "SPJ BOK"}, "statistik": {"berkas": 0, "subfolder": 0}, "struktur": {"name": "SPJ BOK", "id": "1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "url": "https://drive.google.com/drive/folders/1YmIQquag2Qxr3jv3pFzBHjcCd8YB9mE9", "files": [], "children": []}, "files": [], "analisa": {"kpi": {"berkas": 0, "folder": 0, "jenis": 0, "sumber": "-"}, "catatan": "belum ada berkas"}, "adaData": false, "generated": "21 Oktober 2026 15:47 WIB"};</script>
 <script src="assets/app.js"></script>
 <script src="assets/pages/spj-bok.js"></script>
 </body>

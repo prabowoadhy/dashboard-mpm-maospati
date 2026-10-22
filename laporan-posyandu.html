@@ -3,16 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Laporan Posyandu — Dashboard MPM Maospati</title>
+<meta name="theme-color" content="#f7f4ec"/>
+<title>Laporan Posyandu · Dashboard MPM Maospati</title>
 <meta name="description" content="Kelengkapan laporan bulanan LHK posyandu per bulan dan per tahun"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="laporan-posyandu">
+<a class="skip" href="#main">Langsung ke isi</a>
 <div class="topwrap">
   <header class="top">
     <div class="inner">
       <div class="brand">
-        <div class="logo">MPM</div>
+        <div class="logo" aria-hidden="true">MPM</div>
         <div>
           <h1>Dashboard MPM Maospati</h1>
           <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>
@@ -21,10 +23,10 @@
       <div id="drivebtn"></div>
     </div>
   </header>
-  <nav class="menu"><div class="navinner" id="navmenu"></div></nav>
+  <nav class="menu" aria-label="Menu utama"><div class="navinner" id="navmenu"></div></nav>
 </div>
 
-<div class="wrap">
+<main class="wrap" id="main">
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">Laporan Posyandu</h2>
@@ -38,36 +40,40 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div class="grid k2">
-<div class="card"><h3>Laporan Terkumpul per Tahun<span>bulan berstatus ADA</span></h3><div id="c-perTahun"></div><p class="src" data-auto-sumber="1">📄 Sumber data: <code>KELENGKAPAN LHK.xlsx</code> — folder <b>LAPORAN POSYANDU</b> (kolom TAHUN, BULAN, LAPORAN: ADA/BELUM)</p></div><div class="card"><h3>Belum / Tanpa Status<span>yang perlu dilengkapi</span></h3><div id="c-sisa"></div><p class="src">📄 Sumber data: <code>KELENGKAPAN LHK.xlsx</code> — folder <b>LAPORAN POSYANDU</b> (kolom TAHUN, BULAN, LAPORAN: ADA/BELUM)</p></div><div class="card" style="grid-column:1/-1"><h3>Matriks Bulan &times; Tahun<span>ADA / BELUM / kosong</span></h3><div class="scroll"><div id="c-matriks"></div></div><p class="src">📄 Sumber data: <code>KELENGKAPAN LHK.xlsx</code> — folder <b>LAPORAN POSYANDU</b> (kolom TAHUN, BULAN, LAPORAN: ADA/BELUM)</p></div><div class="card" style="grid-column:1/-1"><h3>Berkas Laporan di Folder<span>docx &amp; xlsx</span></h3><div id="c-berkas"></div><p class="src">📄 Sumber data: berkas laporan pada folder <b>LAPORAN POSYANDU</b> (LHK bulanan; dokumen pendukung ada di folder <b>DATA POSYANDU</b>)</p></div></div>
+<section class="card"><h3>Laporan Terkumpul per Tahun<span>bulan berstatus ADA</span></h3><div id="c-perTahun"></div><p class="src" data-auto-sumber="1">Sumber data: <code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU</b> (kolom TAHUN, BULAN, LAPORAN: ADA/BELUM)</p></section><section class="card"><h3>Belum / Tanpa Status<span>yang perlu dilengkapi</span></h3><div id="c-sisa"></div><p class="src">Sumber data: <code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU</b> (kolom TAHUN, BULAN, LAPORAN: ADA/BELUM)</p></section><section class="card full"><h3>Matriks Bulan &times; Tahun<span>ADA / BELUM / kosong</span></h3><div class="scroll"><div id="c-matriks"></div></div><p class="src">Sumber data: <code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU</b> (kolom TAHUN, BULAN, LAPORAN: ADA/BELUM)</p></section><section class="card full"><h3>Berkas Laporan di Folder<span>docx &amp; xlsx</span></h3><div id="c-berkas"></div><p class="src">Sumber data: berkas laporan pada folder <b>LAPORAN POSYANDU</b> (LHK bulanan; dokumen pendukung ada di folder <b>DATA POSYANDU</b>)</p></section></div>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Isi folder Google Drive <span id="filecount">—</span></h3>
-    <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
-    <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
-    folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
-  </div>
+  <details class="utility">
+    <summary><span id="treecard">Isi folder Google Drive</span> <span id="filecount">memuat</span></summary>
+    <div class="body">
+      <div class="tree" id="treehost"><p class="muted">Memuat daftar berkas...</p></div>
+      <p class="note">Klik nama berkas atau folder untuk membukanya di Google Drive. Daftar ini mengikuti isi
+      folder saat data disinkronkan ulang (<code>python tools/sync.py</code>).</p>
+    </div>
+  </details>
 
-  <div class="card" style="margin-top:14px">
-    <h3>Cara membaca &amp; memperbaiki data <span>panduan singkat</span></h3>
-    <ul class="tl">
-      <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu — nama berkas Excel-nya
-      beserta folder tempat berkas itu berada di Google Drive.</li>
-      <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-      (tombol <b>Buka folder di Google Drive</b> di atas) dan cocokkan kolomnya.</li>
-      <li>Sesudah berkas diperbaiki di Drive, tekan <b>⟳ Sinkron sekarang</b> di kanan atas agar
-      halaman menampilkan angka terbaru.</li>
-      <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
-      "Saran perbaikan data".</li>
-    </ul>
-  </div>
+  <details class="utility">
+    <summary>Cara membaca &amp; memperbaiki data</summary>
+    <div class="body">
+      <ul class="tl">
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
+        beserta folder tempat berkas itu berada di Google Drive.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
+        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        halaman menampilkan angka terbaru.</li>
+        <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
+        "Saran perbaikan data".</li>
+      </ul>
+    </div>
+  </details>
 
   <footer class="foot">
     <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
-    <span>Dashboard MPM &middot; 10 menu kegiatan</span>
+    <span>UPTD Puskesmas Maospati</span>
   </footer>
-</div>
+</main>
 
-<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["laporan-posyandu"] = {"slug": "laporan-posyandu", "menu": "Laporan Posyandu", "subjudul": "Laporan bulanan LHK posyandu", "deskripsi": "Kelengkapan laporan LHK per bulan", "folder": {"id": "1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "url": "https://drive.google.com/drive/folders/1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "name": "LAPORAN POSYANDU"}, "statistik": {"berkas": 1, "subfolder": 0}, "struktur": {"name": "LAPORAN POSYANDU", "id": "1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "url": "https://drive.google.com/drive/folders/1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "files": [{"id": "1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs", "name": "KELENGKAPAN LHK.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs/view"}], "children": []}, "files": [{"id": "1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs", "name": "KELENGKAPAN LHK.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs/view", "path": "LAPORAN POSYANDU"}], "analisa": {"kpi": {"tahun": [2025, 2026], "terkumpul": 15, "total": 24, "bulanIni": 3, "tahunTerakhir": 2026}, "lhk": [{"tahun": 2025, "bulan": "Januari", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Februari", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Maret", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "April", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Mei", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Juni", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Juli", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Agustus", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "September", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Oktober", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "November", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Desember", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "Januari", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "Februari", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "Maret", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "April", "ada": false, "belum": false}, {"tahun": 2026, "bulan": "Mei", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Juni", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Juli", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Agustus", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "September", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Oktober", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "November", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Desember", "ada": false, "belum": true}], "bulan": ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], "berkasLaporan": [{"id": "1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs", "name": "KELENGKAPAN LHK.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs/view", "path": "LAPORAN POSYANDU"}]}, "adaData": true, "generated": "21 October 2026 15:47 WIB"};</script>
+<script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["laporan-posyandu"] = {"slug": "laporan-posyandu", "menu": "Laporan Posyandu", "subjudul": "Laporan bulanan LHK posyandu", "deskripsi": "Kelengkapan laporan LHK per bulan", "folder": {"id": "1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "url": "https://drive.google.com/drive/folders/1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "name": "LAPORAN POSYANDU"}, "statistik": {"berkas": 1, "subfolder": 0}, "struktur": {"name": "LAPORAN POSYANDU", "id": "1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "url": "https://drive.google.com/drive/folders/1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS", "files": [{"id": "1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs", "name": "KELENGKAPAN LHK.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs/view"}], "children": []}, "files": [{"id": "1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs", "name": "KELENGKAPAN LHK.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs/view", "path": "LAPORAN POSYANDU"}], "analisa": {"kpi": {"tahun": [2025, 2026], "terkumpul": 15, "total": 24, "bulanIni": 3, "tahunTerakhir": 2026}, "lhk": [{"tahun": 2025, "bulan": "Januari", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Februari", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Maret", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "April", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Mei", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Juni", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Juli", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Agustus", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "September", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Oktober", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "November", "ada": true, "belum": false}, {"tahun": 2025, "bulan": "Desember", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "Januari", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "Februari", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "Maret", "ada": true, "belum": false}, {"tahun": 2026, "bulan": "April", "ada": false, "belum": false}, {"tahun": 2026, "bulan": "Mei", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Juni", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Juli", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Agustus", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "September", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Oktober", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "November", "ada": false, "belum": true}, {"tahun": 2026, "bulan": "Desember", "ada": false, "belum": true}], "bulan": ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], "berkasLaporan": [{"id": "1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs", "name": "KELENGKAPAN LHK.xlsx", "kind": "file", "modified": "Oct 19", "url": "https://drive.google.com/file/d/1ZMS5tgWmAo9gBrrZzcsBTKTjl_BvYQMs/view", "path": "LAPORAN POSYANDU"}]}, "adaData": true, "generated": "21 Oktober 2026 15:47 WIB"};</script>
 <script src="assets/app.js"></script>
 <script src="assets/pages/laporan-posyandu.js"></script>
 </body>

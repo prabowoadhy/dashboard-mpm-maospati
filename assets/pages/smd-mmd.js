@@ -1,10 +1,10 @@
-/* SMD MMD — rekap per desa & tahun, kelengkapan, heatmap indikator */
+/* SMD MMD · rekap per desa & tahun, kelengkapan, heatmap indikator */
 window.renderPage = function(a, d){
   const tahun = a.tahun || [], desa = a.desa || [];
   const k = a.kpi || {};
   set('kpis', kpiCards([
     { label: 'Desa / kelurahan', value: k.desa, sub: 'wilayah tercakup' },
-    { label: 'Tahun SMD', value: (tahun[0] || '–') + '–' + (tahun[tahun.length - 1] || '–'), sub: tahun.join(', ') },
+    { label: 'Tahun SMD', value: (tahun[0] || '-') + '-' + (tahun[tahun.length - 1] || '-'), sub: tahun.join(', '), small: true },
     { label: 'Total responden', value: fnum(k.responden), sub: 'KK dari semua berkas rekap' },
     { label: 'Indikator terbaca', value: k.indikator, sub: 'gabungan instrumen lama & baru' },
     { label: 'Rekap selesai', value: k.rekapSelesai + '/' + k.kelTotal, sub: 'per desa-tahun (KELENGKAPAN SMD)' },
@@ -45,7 +45,7 @@ window.renderPage = function(a, d){
     cells: tahun.map(t => {
       const x = (a.kelengkapan || []).find(y => y.tahun === t && y.desa === v);
       if (!x) return { v: '' };
-      return { v: 'x', color: null, html: `<span class="pill ${x.rekap ? 'ok' : 'no'}">R</span> <span class="pill ${x.analisa ? 'ok' : 'no'}">A</span>`, title: `${v} ${t} — rekap ${x.rekap ? 'sudah' : 'belum'}, analisa ${x.analisa ? 'sudah' : 'belum'}` };
+      return { v: 'x', color: null, html: `<span class="pill ${x.rekap ? 'ok' : 'no'}">R</span> <span class="pill ${x.analisa ? 'ok' : 'no'}">A</span>`, title: `${v} ${t} · rekap ${x.rekap ? 'sudah' : 'belum'}, analisa ${x.analisa ? 'sudah' : 'belum'}` };
     })
   }));
   set('c-kel', '<div class="scroll">' + matrixBox(tahun, rows, { labelWidth: '130px' }) + '</div>' +
@@ -75,7 +75,7 @@ window.renderPage = function(a, d){
         const c = it ? cov(it[1], it[2]) : null;
         if (c === null) return { v: '' , title: v + ': data tidak lengkap' };
         return { v: c.toFixed(0), color: c < 50 ? '#f4b6b1' : c < 75 ? '#f7dfa8' : '#b7e2c6',
-                 text: c.toFixed(0), title: `${v} ${t} — ${a.indTexts[idx]}: ${fpct(c)}` };
+                 text: c.toFixed(0), title: `${v} ${t} · ${a.indTexts[idx]}: ${fpct(c)}` };
       })
     }));
     set('c-heat-sub', 'tahun ' + t + ' · warna = % jawaban YA');
@@ -83,7 +83,7 @@ window.renderPage = function(a, d){
   }
   selT.onchange = heat; heat();
 
-  /* tabel indikator per desa — tahun dipilih dulu, desa mengikuti yang punya data */
+  /* tabel indikator per desa · tahun dipilih dulu, desa mengikuti yang punya data */
   const selD = el('f-desa'), selT2 = el('f-tahun2');
   selT2.innerHTML = tahun.map(t => `<option>${t}</option>`).join('');
   selT2.value = tahun[tahun.length - 1] || '';
@@ -125,7 +125,7 @@ window.renderPage = function(a, d){
   /* dokumen analisa per tahun */
   const docs = a.dokumen || {};
   const dk = Object.keys(docs).sort();
-  set('c-doc', dk.length ? dk.map(folder => `<div class="fld">📂 ${esc(folder)}</div>` +
+  set('c-doc', dk.length ? dk.map(folder => `<div class="fld">${esc(folder)}</div>` +
       docs[folder].map(f => `<div class="file" style="padding-left:14px"><a class="nm" href="${f.url}" target="_blank" rel="noopener">${esc(f.name)}</a><span class="mod">${esc(f.modified || '')}</span></div>`).join('')
     ).join('') : '<p class="muted">Belum ada berkas analisa.</p>');
 };

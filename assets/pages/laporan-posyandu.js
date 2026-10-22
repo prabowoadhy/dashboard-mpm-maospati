@@ -1,4 +1,4 @@
-/* Laporan Posyandu — kelengkapan LHK bulanan */
+/* Laporan Posyandu · kelengkapan LHK bulanan */
 window.renderPage = function(a){
   const k = a.kpi || {}, bulan = a.bulan || [];
   const tahun = k.tahun || [];
@@ -32,7 +32,7 @@ window.renderPage = function(a){
   set('c-matriks', matrixBox(tahun.map(String), rows, { labelWidth: '120px' }));
   set('c-sisa', '<ul class="tl">' + Object.keys(perTahun).map(t => {
     const p = perTahun[t];
-    return `<li><b>${t}</b> — terkumpul ${p.ada}, belum ${p.belum}${p.kosong ? ', tanpa status ' + p.kosong : ''}.</li>`;
+    return `<li><b>${t}</b> · terkumpul ${p.ada}, belum ${p.belum}${p.kosong ? ', tanpa status ' + p.kosong : ''}.</li>`;
   }).join('') + '</ul>');
 
   const berkas = a.berkasLaporan || [];
