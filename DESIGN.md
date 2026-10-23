@@ -57,6 +57,9 @@ Chart fills: `#0b57d0`, `#137333`, `#b06000`, `#c5221f`, `#7b1fa2`, `#00796b`,
 `#c2185b`, `#3949ab`. These are Google-adjacent categorical colours, at least
 3:1 against the chart track, and remain distinguishable in print.
 
+The official emblem's greens are institutional identity, not UI tokens. The mark
+is used as supplied and is not recoloured to the blue action palette.
+
 ## Typography
 
 - Display and headings: `Google Sans`, `Segoe UI Variable Display`, `Segoe UI`,
@@ -88,11 +91,11 @@ Chart fills: `#0b57d0`, `#137333`, `#b06000`, `#c5221f`, `#7b1fa2`, `#00796b`,
 
 ## Components
 
-- **Top app bar:** white surface, blue rounded-square MPM mark, sans brand,
-  pill navigation with a pale blue active state, and one blue sync action. On
-  phones the app bar becomes one compact row: hamburger, brand, sync icon. The
-  last-sync line sits underneath. The menu itself is a disclosure panel, not a
-  second row of horizontal links.
+- **Top app bar:** white surface, official Puskesmas Maospati emblem in its
+  original green, sans brand, pill navigation with a pale blue active state, and
+  one blue sync action. On phones the app bar becomes one compact row:
+  hamburger, emblem, brand, sync icon. The last-sync line sits underneath. The
+  menu itself is a disclosure panel, not a second row of horizontal links.
 - **Page header:** a pale blue tonal surface that groups the title, description,
   last-sync note, and Drive action. It replaces the old ruled masthead without
   changing the flow of the page.

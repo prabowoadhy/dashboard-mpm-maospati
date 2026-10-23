@@ -64,7 +64,7 @@ def page(slug, menu, title, subtitle, content, show_tree=True):
         <span class="menu-toggle-label">Menu</span>
       </button>
       <div class="brand">
-        <div class="logo" aria-hidden="true">MPM</div>
+        <img class="logo" src="assets/logo-puskesmas.png" alt="" width="95" height="105">
         <div>
           <h1>Dashboard MPM Maospati</h1>
           <p>Manajemen Pemberdayaan Masyarakat &middot; UPTD Puskesmas Maospati</p>

@@ -65,6 +65,7 @@ Bila `SYNC_SECRET` diisi di hosting, halaman menanyakan kode sekali dan menyimpa
 ```
 index.html                   beranda (8 kartu menu)
 <slug>.html                  8 halaman menu (hasil tools/build_pages.py)
+assets/logo-puskesmas.png    lambang UPTD Puskesmas Maospati (sumber: https://puskesmas-maospati.magetan.go.id/)
 assets/style.css             tampilan Material pastel, header ponsel, dan tabel responsif
 assets/app.js                kerangka bersama: menu, tombol Sinkron, pemuatan data, KPI, tabel, matriks
 assets/pages/<slug>.js       ISI ringkasan tiap halaman (satu berkas per halaman -> mudah dirawat)
