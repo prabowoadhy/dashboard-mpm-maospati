@@ -49,7 +49,7 @@ def page(slug, menu, title, subtitle, content, show_tree=True):
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="theme-color" content="#f7f4ec"/>
+<meta name="theme-color" content="#f7f9fc"/>
 <title>{title}</title>
 <meta name="description" content="{subtitle}"/>
 <link rel="stylesheet" href="assets/style.css"/>
@@ -59,6 +59,10 @@ def page(slug, menu, title, subtitle, content, show_tree=True):
 <div class="topwrap">
   <header class="top">
     <div class="inner">
+      <button class="menu-toggle" id="menutoggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Buka menu">
+        <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="menu-toggle-label">Menu</span>
+      </button>
       <div class="brand">
         <div class="logo" aria-hidden="true">MPM</div>
         <div>
@@ -136,7 +140,7 @@ PAGES = [
  dict(slug="smd-mmd", menu="SMD MMD", title="SMD MMD · Dashboard MPM Maospati",
       subtitle="Survey Mawas Diri &amp; Musyawarah Masyarakat Desa: rekap per desa, capaian indikator, dan kelengkapan berkas",
       content='<div class="grid k4" id="kpis" style="margin-bottom:14px"></div>\n  <div class="grid k2">\n'
-        + card("Responden per Desa &amp; Tahun", "KK", '<div class="chart-scroll"><div id="c-responden"></div></div><div class="legend" id="l-responden"></div>',
+        + card("Responden per Desa &amp; Tahun", "KK", '<div id="c-responden"></div>',
                full=True, src=SRC_SMD_REKAP)
         + card("Kelengkapan Rekap &amp; Analisa", "KELENGKAPAN SMD.xlsx", '<div id="c-kel"></div>',
                full=True, src=SRC_KEL_SMD, auto=True)
@@ -147,9 +151,9 @@ PAGES = [
         + card("Heatmap Indikator &times; Desa", 'tahun terpilih &middot; <span id="c-heat-sub"></span>',
                '<div class="rowctl"><label>Pilih tahun <select id="f-tahun"></select></label></div>'
                '<div class="scroll"><div id="c-heat"></div></div>'
-               '<div class="legend"><span><i class="sw" style="background:#f4b6b1"></i>&lt;50%</span>'
-               '<span><i class="sw" style="background:#f7dfa8"></i>50–75%</span>'
-               '<span><i class="sw" style="background:#b7e2c6"></i>&ge;75%</span>'
+               '<div class="legend"><span><i class="sw" style="background:#fce8e6"></i>&lt;50%</span>'
+               '<span><i class="sw" style="background:#fef7e0"></i>50–75%</span>'
+               '<span><i class="sw" style="background:#e6f4ea"></i>&ge;75%</span>'
                '<span class="muted">sel abu = data belum lengkap · perhatikan arah indikator (sebagian rendah = baik)</span></div>',
                full=True, src=SRC_SMD_REKAP)
         + card("Detail Indikator per Desa", '<span id="c-tbl-sub"></span>',

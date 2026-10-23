@@ -23,7 +23,11 @@ Setiap halaman punya tombol **menuju folder Google Drive** dan daftar isi folder
 yang bisa diklik untuk membuka berkas aslinya. Halaman **Jadwal Promkes** tombolnya menuju Google Calendar.
 
 Tampilan memakai **tema putih/terang permanen** (tidak mengikuti mode gelap sistem operasi), dan baris menu
-disejajarkan dengan badan halaman (lebar konten sama: 1180px).
+disejajarkan dengan badan halaman. Di ponsel, menu dilipat menjadi tombol garis tiga di header dan terbuka
+sebagai panel navigasi penuh di bawah header.
+
+Tabel responden pada halaman SMD MMD bisa diurutkan: klik judul kolom untuk urutan naik, klik lagi untuk
+urutan turun. Nilai yang belum ada tetap diletakkan di bawah.
 
 ## Keterangan sumber data di setiap panel
 
@@ -61,7 +65,7 @@ Bila `SYNC_SECRET` diisi di hosting, halaman menanyakan kode sekali dan menyimpa
 ```
 index.html                   beranda (8 kartu menu)
 <slug>.html                  8 halaman menu (hasil tools/build_pages.py)
-assets/style.css             tampilan (tema terang minimalis, ikut mode gelap sistem)
+assets/style.css             tampilan Material pastel, header ponsel, dan tabel responsif
 assets/app.js                kerangka bersama: menu, tombol Sinkron, pemuatan data, KPI, tabel, matriks
 assets/pages/<slug>.js       ISI ringkasan tiap halaman (satu berkas per halaman -> mudah dirawat)
 api/sync.js                  serverless function: tombol Sinkron saat di-hosting (pemicu Actions)

@@ -16,7 +16,7 @@ const MENU = [
   { slug: 'laporan-kegiatan-dinkes', label: 'Laporan Kegiatan Dinkes',file: 'laporan-kegiatan-dinkes.html' },
   { slug: 'jadwal-promkes',          label: 'Jadwal Promkes',         file: 'jadwal-promkes.html' }
 ];
-const COL = ['#14594a','#3f7d6b','#8a5a12','#a05a3c','#4f6d7a','#6b5a3e','#7a2f4a','#2f6f8a'];
+const COL = ['#0b57d0','#137333','#b06000','#c5221f','#7b1fa2','#00796b','#c2185b','#3949ab'];
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 /* ---------- helper tampilan ---------- */
@@ -73,6 +73,41 @@ function table(cols, rows){
     }).join('') +
     '</tbody></table>';
 }
+function aktifkanSortir(table){
+  const head = table.tHead, body = table.tBodies[0];
+  if (!head || !body) return;
+  const headers = Array.from(head.rows[0].cells);
+  const rows = Array.from(body.rows);
+  let active = -1, dir = 1;
+  const nilai = (row, i) => {
+    const cell = row.cells[i];
+    if (!cell) return null;
+    const raw = (cell.textContent || '').trim();
+    if (!cell.classList || !cell.classList.contains('num')) return raw.toLocaleLowerCase('id');
+    if (!/\d/.test(raw)) return null;
+    const n = Number(raw.replace(/\./g, '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  };
+  const urut = i => {
+    const next = active === i ? -dir : 1;
+    active = i; dir = next;
+    const sorted = rows.slice().sort((a, b) => {
+      const av = nilai(a, i), bv = nilai(b, i);
+      if (av === null && bv === null) return 0;
+      if (av === null) return 1;
+      if (bv === null) return -1;
+      if (typeof av === 'string' && typeof bv === 'string') return av.localeCompare(bv, 'id') * dir;
+      return (av - bv) * dir;
+    });
+    sorted.forEach(r => body.appendChild(r));
+    headers.forEach((h, n) => h.setAttribute('aria-sort', n === i ? (dir === 1 ? 'ascending' : 'descending') : 'none'));
+  };
+  headers.forEach((h, i) => {
+    const btn = h.querySelector && h.querySelector('.sort-btn');
+    if (btn) btn.addEventListener('click', () => urut(i));
+  });
+}
+
 function matrixBox(cols, rows, cfg){
   /* cols: array label kolom; rows: {label, cells:[{v, color, title}]} */
   const w = cfg && cfg.labelWidth ? cfg.labelWidth : '300px';
@@ -135,18 +170,36 @@ const SYNC_URL = '/api/sync';
 function drawSync(){
   const host = el('drivebtn');
   if (!host) return;
-  host.innerHTML = `<button class="btn primary" id="btnsync" type="button">Sinkronkan data</button>
+  host.innerHTML = `<button class="btn primary" id="btnsync" type="button" aria-label="Sinkronkan data" title="Sinkronkan data">
+      <svg class="sync-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"/></svg>
+      <span class="sync-label">Sinkronkan data</span>
+    </button>
     <div class="muted" id="synctime">Terakhir sinkron: memuat…</div>`;
   const btn = el('btnsync');
   if (btn) btn.onclick = () => jalankanSinkron();
+}
+
+function setSyncLabel(btn, text){
+  if (!btn) return;
+  const span = typeof btn.querySelector === 'function' ? btn.querySelector('.sync-label') : null;
+  if (span) span.textContent = text;
+  else btn.textContent = text;
+}
+
+function resetSyncButton(btn, label){
+  if (!btn) return;
+  btn.disabled = false;
+  if (typeof btn.removeAttribute === 'function') btn.removeAttribute('aria-busy');
+  setSyncLabel(btn, label);
 }
 
 const kodeSinkron = () => { try { return localStorage.getItem('mpm_sync') || ''; } catch (e) { return ''; } };
 
 async function jalankanSinkron(){
   const btn = el('btnsync');
-  const label = btn ? btn.textContent : '';
-  if (btn){ btn.disabled = true; btn.textContent = 'Menyinkronkan…'; }
+  const labelEl = btn && typeof btn.querySelector === 'function' ? btn.querySelector('.sync-label') : null;
+  const label = labelEl ? labelEl.textContent : btn ? btn.textContent : '';
+  if (btn){ btn.disabled = true; if (typeof btn.setAttribute === 'function') btn.setAttribute('aria-busy', 'true'); setSyncLabel(btn, 'Menyinkronkan…'); }
   set('synctime', 'Menjalankan sinkronisasi…');
   let hasil = null, pesan = '';
   try {
@@ -155,7 +208,7 @@ async function jalankanSinkron(){
     if (r.status === 401 || r.status === 403){
       const kode = prompt('Kode sinkronisasi:');
       if (kode){ try { localStorage.setItem('mpm_sync', kode); } catch (e) {} }
-      if (btn){ btn.disabled = false; btn.textContent = label; }
+      if (btn){ resetSyncButton(btn, label); }
       set('synctime', 'Kode dimasukkan. Tekan tombol Sinkronkan data lagi.');
       return;
     }
@@ -165,7 +218,7 @@ async function jalankanSinkron(){
     pesan = e.message;
   }
   if (!hasil){
-    if (btn){ btn.disabled = false; btn.textContent = label; }
+    if (btn){ resetSyncButton(btn, label); }
     set('synctime', `Sinkron otomatis tidak aktif di sini (${esc(pesan)}). Jalankan <code>python tools/sync.py --refresh</code> lalu muat ulang halaman.`);
     return;
   }
@@ -183,13 +236,13 @@ async function jalankanSinkron(){
       set('synctime', `Sinkronisasi berjalan… ${umur}s (${esc(st.detail || '')})`);
       setTimeout(cek, 3000);
     } else if (st && !basi && st.state === 'error'){
-      if (btn){ btn.disabled = false; btn.textContent = label; }
+      if (btn){ resetSyncButton(btn, label); }
       set('synctime', 'Sinkronisasi gagal: ' + esc(String(st.detail || '').slice(0, 160)));
     } else if (st && !basi && st.state === 'done'){
       set('synctime', `Sinkron selesai dalam ${umur}s. Memuat ulang…`);
       setTimeout(() => location.reload(), 800);
     } else if (umur > 300){
-      if (btn){ btn.disabled = false; btn.textContent = label; }
+      if (btn){ resetSyncButton(btn, label); }
       set('synctime', 'Sinkron masih diproses. Muat ulang halaman beberapa saat lagi untuk melihat hasilnya.');
     } else {
       set('synctime', `Menunggu workflow dimulai… ${umur}s`);
@@ -227,9 +280,36 @@ function drawFrame(active){
   }
 }
 
+function setupMobileMenu(){
+  const nav = document.querySelector('nav.menu');
+  const btn = el('menutoggle');
+  if (!nav || !btn) return;
+  const host = el('navmenu');
+  const label = typeof btn.querySelector === 'function' ? btn.querySelector('.menu-toggle-label') : null;
+  const setMenu = open => {
+    nav.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+    if (label) label.textContent = open ? 'Tutup' : 'Menu';
+    if (open && host) host.scrollTop = 0;
+  };
+  btn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && nav.classList.contains('open')){
+      setMenu(false);
+      btn.focus();
+    }
+  });
+  const desktop = window.matchMedia('(min-width: 721px)');
+  const saatLebar = e => { if (e.matches) setMenu(false); };
+  if (desktop.addEventListener) desktop.addEventListener('change', saatLebar);
+  else desktop.addListener(saatLebar);
+}
+
 async function boot(){
   const page = document.body.dataset.page;
   drawFrame(page);
+  setupMobileMenu();
   drawSync();
   try {
     if (page === 'index'){

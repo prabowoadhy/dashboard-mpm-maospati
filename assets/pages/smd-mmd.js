@@ -11,32 +11,38 @@ window.renderPage = function(a, d){
     { label: 'Analisa selesai', value: k.analisaSelesai + '/' + k.kelTotal, sub: 'KAK, prioritas & metode masalah' },
   ]));
 
-  /* responden per desa per tahun (SVG batang berkelompok) */
-  const W = 640, rowH = 15, padL = 104;
-  let max = 0;
-  desa.forEach(v => tahun.forEach(t => {
+  /* responden per desa per tahun: tabel angka, lebih mudah dibaca daripada grafik */
+  const nilaiResponden = (v, t) => {
     const r = a.rekap.find(x => x.desa === v && x.tahun === t);
-    if (r && r.responden) max = Math.max(max, r.responden);
-  }));
-  const scale = v => (W - padL - 44) * v / (max || 1);
-  let s = `<svg viewBox="0 0 ${W} ${40 + desa.length * rowH}" width="100%" height="${40 + desa.length * rowH}">`;
-  desa.forEach((v, i) => {
-    const y = 24 + i * rowH;
-    s += `<text x="0" y="${y + 9}">${esc(v)}</text>`;
-    tahun.forEach((t, j) => {
-      const r = a.rekap.find(x => x.desa === v && x.tahun === t);
-      const val = r && r.responden ? r.responden : 0;
-      const yy = y + j * (rowH / tahun.length), hh = Math.max(1.5, rowH / tahun.length - 1.8);
-      s += val
-        ? `<rect x="${padL}" y="${yy.toFixed(1)}" width="${scale(val).toFixed(1)}" height="${hh.toFixed(1)}" rx="1.6" fill="${COL[j % COL.length]}"><title>${esc(v)} ${t}: ${val} KK</title></rect>`
-        : `<rect x="${padL}" y="${yy.toFixed(1)}" width="4" height="${hh.toFixed(1)}" rx="1.6" fill="#c9ced6"><title>${esc(v)} ${t}: belum ada berkas rekap</title></rect>`;
+    return r && r.responden ? r.responden : null;
+  };
+  const totalTahun = tahun.map(t => desa.reduce((n, v) => n + (nilaiResponden(v, t) || 0), 0));
+  const totalDesa = v => tahun.reduce((n, t) => n + (nilaiResponden(v, t) || 0), 0);
+  const totalSemua = totalTahun.reduce((n, v) => n + v, 0);
+  const sortHead = (label, num) => `<th scope="col" class="sortable${num ? ' num' : ''}" aria-sort="none"><button class="sort-btn" type="button" title="Klik untuk mengurutkan">${label}<span class="sort-ind" aria-hidden="true"></span></button></th>`;
+  let s = '<div class="scroll"><table aria-label="Responden per desa dan tahun">'
+    + '<thead><tr>'
+    + sortHead('Desa / kelurahan')
+    + tahun.map(t => sortHead(esc(String(t)), true)).join('')
+    + sortHead('Jumlah', true)
+    + '</tr></thead><tbody>';
+  desa.forEach(v => {
+    s += `<tr><th scope="row">${esc(v)}</th>`;
+    tahun.forEach(t => {
+      const val = nilaiResponden(v, t);
+      s += `<td class="num${val === null ? ' muted' : ''}">${val === null ? '&ndash;' : fnum(val)}</td>`;
     });
+    s += `<td class="num"><b>${fnum(totalDesa(v))}</b></td></tr>`;
   });
-  s += `<line x1="${padL}" y1="18" x2="${padL}" y2="${26 + desa.length * rowH}" stroke="#c9ced6" stroke-width=".7"/>`;
-  s += '</svg>';
+  s += '</tbody><tfoot><tr><th scope="row">Jumlah</th>'
+    + totalTahun.map(n => `<td class="num">${fnum(n)}</td>`).join('')
+    + `<td class="num">${fnum(totalSemua)}</td></tr></tfoot></table></div>`
+    + '<p class="note">Klik judul kolom untuk mengurutkan. Tanda &ndash; berarti belum ada berkas rekap pada tahun itu.</p>';
   set('c-responden', s);
-  set('l-responden', tahun.map((t, i) => `<span><i class="sw" style="background:${COL[i % COL.length]}"></i>${t}</span>`).join('') +
-    '<span><i class="sw" style="background:#c9ced6"></i>belum ada berkas</span>');
+  if (typeof aktifkanSortir === 'function' && typeof document.querySelector === 'function'){
+    const tabel = document.querySelector('#c-responden table');
+    if (tabel) aktifkanSortir(tabel);
+  }
 
   /* kelengkapan rekap & analisa: matriks desa × tahun */
   const rows = [];
@@ -74,7 +80,7 @@ window.renderPage = function(a, d){
         const it = r && r.ind.find(x => x[0] === idx);
         const c = it ? cov(it[1], it[2]) : null;
         if (c === null) return { v: '' , title: v + ': data tidak lengkap' };
-        return { v: c.toFixed(0), color: c < 50 ? '#f4b6b1' : c < 75 ? '#f7dfa8' : '#b7e2c6',
+        return { v: c.toFixed(0), color: c < 50 ? '#fce8e6' : c < 75 ? '#fef7e0' : '#e6f4ea',
                  text: c.toFixed(0), title: `${v} ${t} · ${a.indTexts[idx]}: ${fpct(c)}` };
       })
     }));
