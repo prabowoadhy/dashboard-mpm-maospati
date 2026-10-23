@@ -60,7 +60,7 @@ def page(slug, menu, title, subtitle, content, show_tree=True):
   <header class="top">
     <div class="inner">
       <button class="menu-toggle" id="menutoggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Buka menu">
-        <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
         <span class="menu-toggle-label">Menu</span>
       </button>
       <div class="brand">
