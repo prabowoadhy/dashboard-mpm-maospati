@@ -1,5 +1,5 @@
 {
- "generated": "26 Oktober 2026 08:21 WIB",
+ "generated": "26 Oktober 2026 09:48 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -8,7 +8,7 @@
    "deskripsi": "Data SMD/MMD, analisa hasil & rekap per desa",
    "id": "1GvbF6KR_MXwwyOlLInTzMxTab3rYw7Fz",
    "url": "https://drive.google.com/drive/folders/1GvbF6KR_MXwwyOlLInTzMxTab3rYw7Fz",
-   "berkas": 44,
+   "berkas": 45,
    "subfolder": 11,
    "adaData": true
   },
@@ -96,11 +96,11 @@
    "deskripsi": "Kalender kegiatan Promkes - agenda SMD/MMD, posyandu, dan penyuluhan",
    "id": "",
    "url": "https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1",
-   "berkas": 27,
+   "berkas": 29,
    "subfolder": 0,
    "adaData": true,
    "jenis": "kalender",
-   "keterangan": "2 agenda 30 hari ke depan"
+   "keterangan": "4 agenda 30 hari ke depan"
   }
  ]
 }
