@@ -1,26 +1,29 @@
 # Dashboard MPM Maospati
 
-Dashboard delapan menu kegiatan **Manajemen Pemberdayaan Masyarakat — UPTD Puskesmas Maospati**,
-dibangun dari berkas yang sudah ada di Google Drive (sumber: <https://sites.google.com/view/mpmmaospati/home>).
+Dashboard sepuluh menu kegiatan **Manajemen Pemberdayaan Masyarakat, UPTD Puskesmas Maospati**,
+dibangun dari berkas yang sudah ada di Google Drive (sumber: <https://sites.google.com/view/mpmmaospati/home>),
+ditambah satu spreadsheet Google (PKP) dan kalender Promkes.
 
-Delapan menu mengikuti delapan folder Drive; tiap menu punya **halaman sendiri** dan **berkas data sendiri**
-supaya mudah dirawat:
+Delapan menu mengikuti delapan folder Drive, satu menu membaca spreadsheet Google, dan satu menu membaca
+kalender publik. Tiap menu punya **halaman sendiri** dan **berkas data sendiri** supaya mudah dirawat:
 
 | # | Menu | Halaman | Data | Isi ringkasan |
 |---|---|---|---|---|
 | 1 | SMD MMD | `smd-mmd.html` | `data/smd-mmd.json` | responden per desa & tahun, capaian per klaster, heatmap indikator × desa, kelengkapan rekap & analisa, kebutuhan/harapan warga, berkas analisa |
 | 2 | Laporan Posyandu | `laporan-posyandu.html` | `data/laporan-posyandu.json` | matriks kelengkapan LHK bulan × tahun, progres per tahun, sisa yang belum |
 | 3 | RUK | `ruk.html` | `data/ruk.json` | jumlah kegiatan per bagian, daftar kegiatan + tujuan/sasaran/target/PJ (dari BAB IV) |
-| 4 | Dokumentasi | `dokumentasi.html` | `data/dokumentasi.json` | daftar berkas/foto + saran struktur (folder masih kosong) |
-| 5 | Data Posyandu | `data-posyandu.html` | `data/data-posyandu.json` | posyandu per desa, status aktif, tabel lengkap |
-| 6 | Data Kader | `data-kader.html` | `data/data-kader.json` | kader per desa/posyandu, selisih rekap vs form (**tanpa data pribadi**) |
-| 7 | SPJ BOK | `spj-bok.html` | `data/spj-bok.json` | daftar berkas SPJ + saran format rekap serapan |
-| 8 | Laporan Kegiatan Dinkes | `laporan-kegiatan-dinkes.html` | `data/laporan-kegiatan-dinkes.json` | matriks kegiatan × bulan, progres, berkas pendukung |
-| 9 | Jadwal Promkes | `jadwal-promkes.html` | `data/jadwal-promkes.json` | kalender publik Google (iframe) + agenda 30 hari ke depan, agenda bulan ini, rekap per bulan dari feed ICS |
+| 4 | PKP | `pkp.html` | `data/pkp.json` | capaian indikator Penilaian Kinerja Puskesmas per klaster, indikator terendah, catatan & bukti (dari spreadsheet Google) |
+| 5 | Dokumentasi | `dokumentasi.html` | `data/dokumentasi.json` | daftar berkas/foto + saran struktur (folder masih kosong) |
+| 6 | Data Posyandu | `data-posyandu.html` | `data/data-posyandu.json` | posyandu per desa, status aktif, tabel lengkap |
+| 7 | Data Kader | `data-kader.html` | `data/data-kader.json` | kader per desa/posyandu, selisih rekap vs form (**tanpa data pribadi**) |
+| 8 | SPJ BOK | `spj-bok.html` | `data/spj-bok.json` | daftar berkas SPJ + saran format rekap serapan |
+| 9 | Laporan Kegiatan Dinkes | `laporan-kegiatan-dinkes.html` | `data/laporan-kegiatan-dinkes.json` | matriks kegiatan × bulan, progres, berkas pendukung |
+| 10 | Jadwal Promkes | `jadwal-promkes.html` | `data/jadwal-promkes.json` | kalender publik Google (iframe) + agenda 30 hari ke depan, agenda bulan ini, rekap per bulan dari feed ICS |
 
-Beranda `index.html` menampilkan 9 kartu menu + jumlah berkas tiap folder.
+Beranda `index.html` menampilkan 10 kartu menu + jumlah berkas tiap folder.
 Setiap halaman punya tombol **menuju folder Google Drive** dan daftar isi folder (berkas & subfolder)
-yang bisa diklik untuk membuka berkas aslinya. Halaman **Jadwal Promkes** tombolnya menuju Google Calendar.
+yang bisa diklik untuk membuka berkas aslinya. Halaman **PKP** tombolnya menuju spreadsheet Google,
+halaman **Jadwal Promkes** menuju Google Calendar.
 
 Tampilan memakai **tema putih/terang permanen** (tidak mengikuti mode gelap sistem operasi), dan baris menu
 disejajarkan dengan badan halaman. Di ponsel, menu dilipat menjadi tombol garis tiga di header dan terbuka
@@ -31,12 +34,13 @@ urutan turun. Nilai yang belum ada tetap diletakkan di bawah.
 
 ## Keterangan sumber data di setiap panel
 
-Tiap kartu menutup isinya dengan baris <b>📄 Sumber data: …</b> yang menyebut berkas Excel asalnya
-beserta nama folder di Drive — supaya mudah ditelusuri saat ada angka yang perlu diperbaiki:
+Tiap kartu menutup isinya dengan baris <b>📄 Sumber data: …</b> yang menyebut berkas Excel atau
+spreadsheet asalnya beserta nama folder di Drive, supaya mudah ditelusuri saat ada angka yang perlu diperbaiki:
 
 * contoh pada halaman SMD MMD: <code>KELENGKAPAN SMD.xlsx</code> (folder SMD MMD), berkas rekap tiap desa
   (<code>SUGIHWARAS SMD 2025 REKAP.xlsx</code>, <code>MALANG REKAP 2026.xlsx</code>, …);
 * pada halaman RUK: <code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> sheet <code>BAB IV</code>;
+* pada halaman PKP: spreadsheet <code>PKP KLASTER 1_2026</code> (kolom 2 kegiatan sampai kolom 10 hasil kinerja);
 * pada halaman Jadwal Promkes: kalender publik Google <code>dhellayaamanda2@gmail.com</code> (bukan berkas Excel).
 
 Panel yang nama berkasnya dideteksi otomatis oleh <code>tools/sync.py</code> menambahkan frasa
@@ -63,17 +67,17 @@ Bila `SYNC_SECRET` diisi di hosting, halaman menanyakan kode sekali dan menyimpa
 ## Struktur proyek
 
 ```
-index.html                   beranda (8 kartu menu)
-<slug>.html                  8 halaman menu (hasil tools/build_pages.py)
+index.html                   beranda (10 kartu menu)
+<slug>.html                  10 halaman menu (hasil tools/build_pages.py)
 assets/logo-puskesmas.png    lambang UPTD Puskesmas Maospati (sumber: https://puskesmas-maospati.magetan.go.id/)
 assets/style.css             tampilan Material pastel, header ponsel, dan tabel responsif
 assets/app.js                kerangka bersama: menu, tombol Sinkron, pemuatan data, KPI, tabel, matriks
 assets/pages/<slug>.js       ISI ringkasan tiap halaman (satu berkas per halaman -> mudah dirawat)
 api/sync.js                  serverless function: tombol Sinkron saat di-hosting (pemicu Actions)
-data/<slug>.json             hasil ekstraksi berkas dari Drive (dibuat tools/sync.py)
+data/<slug>.json             hasil ekstraksi folder Drive / spreadsheet (dibuat tools/sync.py)
 data/site.json               daftar menu + jumlah berkas per folder
-tools/sync.py                baca Drive -> analisa .xlsx -> tulis data/*.json
-tools/build_pages.py         rakit 9 berkas HTML dari satu kerangka
+tools/sync.py                baca Drive & spreadsheet -> analisa -> tulis data/*.json
+tools/build_pages.py         rakit 11 berkas HTML dari satu kerangka
 tools/serve.py               jalankan dashboard di komputer + endpoint /api/sync
 tools/check_pages.py         uji statis: id yang dipakai skrip harus ada di HTML-nya
 tools/uji_render.mjs         uji render tiap halaman + uji tombol Sinkron (butuh Node)
@@ -103,7 +107,7 @@ Uji cepat sebelum mengunggah:
 
 ```bash
 python tools/check_pages.py     # id HTML <-> skrip
-node   tools/uji_render.mjs     # 9 halaman harus "OK" semua (mode fetch)
+node   tools/uji_render.mjs     # 11 halaman harus "OK" semua (mode fetch)
 UJI_MODE=inline node tools/uji_render.mjs   # uji juga data cadangan tertanam
 ```
 
@@ -161,6 +165,7 @@ JSON hanya untuk kolom aman, lalu halaman memanggil URL `/exec` tersebut.
 | SMD MMD | `KELENGKAPAN SMD.xlsx`, semua `*REKAP*.xlsx` | satu baris `Jumlah Responden : N KK` di kepala tiap rekap (sudah ada); pastikan satu berkas = satu desa + satu tahun |
 | Laporan Posyandu | `KELENGKAPAN LHK.xlsx` | kolom `STATUS` (ADA/BELUM) konsisten, bulan Januari–Desember diisi walau belum ada laporan |
 | RUK | `Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx` | hilangkan sel gabungan; kolom: `KODE · BAGIAN · KEGIATAN · TUJUAN · SASARAN · TARGET · PJ · ANGGARAN` |
+| PKP | spreadsheet `PKP KLASTER 1_2026` | isi kolom target sasaran (7) dan pencapaian (8) untuk 8 indikator yang masih kosong; samakan rumus agregat klaster dengan rata-rata baris indikator |
 | Data Posyandu | `POSYANDU AKTIF.xlsx` | kolom `STATUS` (AKTIF/TIDAK AKTIF) per posyandu, bukan hanya angka 1/0 |
 | Data Kader | `Data Kader .xlsx` | samakan jumlah rekap dengan daftar form (selisih sekarang 236 vs 241) |
 | Kegiatan Dinkes | `KEGIATAN DINKES.xlsx` | tambah baris untuk setiap kegiatan DINKES baru + kolom `PIC` dan `LINK BUKTI` |
@@ -170,7 +175,8 @@ JSON hanya untuk kolom aman, lalu halaman memanggil URL `/exec` tersebut.
 ## Menambah / mengubah halaman
 
 1. **Menu baru**: tambah entri di `FOLDERS` pada `tools/sync.py` (slug, nama, ID folder, subjudul, deskripsi)
-   dan di `MENU` pada `assets/app.js`.
+   dan di `MENU` pada `assets/app.js`. Menu yang bukan folder Drive (seperti **PKP** dari spreadsheet dan
+   **Jadwal Promkes** dari kalender) punya blok sendiri di `main()` pada `tools/sync.py`.
 2. **Ringkasan**: tambah fungsi `analisa_<slug>()` di `tools/sync.py`, panggil di blok pemilihan analisa.
 3. **Tampilan**: buat `assets/pages/<slug>.js` berisi `window.renderPage = (analisa, data) => {...}`
    (pakai bantuan `kpiCards()`, `barRows()`, `table()`, `matrixBox()` dari `assets/app.js`).
@@ -179,8 +185,10 @@ JSON hanya untuk kolom aman, lalu halaman memanggil URL `/exec` tersebut.
 
 ## Data yang terbaca saat ini
 
-* Sumber: 8 folder Drive, **65 berkas** (SMD MMD 43 · RUK 10 · Kegiatan Dinkes 7 · Data Posyandu 4 ·
-  Laporan Posyandu 1 · Data Kader 1 · Dokumentasi 0 · SPJ BOK 0).
+* Sumber: 8 folder Drive, **68 berkas** (SMD MMD 45 · RUK 10 · Kegiatan Dinkes 7 · Data Posyandu 4 ·
+  Laporan Posyandu 1 · Data Kader 1 · Dokumentasi 0 · SPJ BOK 0), ditambah spreadsheet PKP.
+* PKP: 98 indikator dalam 9 klaster, rata-rata hasil kinerja **58,3%**, 44 indikator tercapai 100%,
+  38 di bawah 50%, 4 belum punya data (sumber: spreadsheet `PKP KLASTER 1_2026`, sinkron 29 Oktober 2026).
 * SMD/MMD: 24 kombinasi desa-tahun, 8 desa, **3.144 KK** responden, 80 judul indikator
   (instrumen 2023–2024 dan 2025–2026 berbeda, jadi tren jangka panjang perlu pemetaan indikator).
 * Posyandu: 42 (semua aktif) · Kader: 236 rekap / 241 nama form.

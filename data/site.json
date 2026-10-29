@@ -1,5 +1,5 @@
 {
- "generated": "28 Oktober 2026 09:07 WIB",
+ "generated": "29 Oktober 2026 08:40 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -33,6 +33,20 @@
    "berkas": 10,
    "subfolder": 2,
    "adaData": true
+  },
+  {
+   "slug": "pkp",
+   "menu": "PKP",
+   "subjudul": "Penilaian Kinerja Puskesmas 2026 · Klaster Pelayanan Manajemen",
+   "deskripsi": "Capaian indikator per klaster, target sasaran, dan catatan petugas",
+   "id": "",
+   "url": "https://docs.google.com/spreadsheets/d/1TSaNfar0dBChnncgr1IIB_HDFhSODmV74RALQb6ZJrI/edit?gid=1379104459#gid=1379104459",
+   "berkas": 0,
+   "subfolder": 0,
+   "adaData": true,
+   "jenis": "sheet",
+   "indikator": 98,
+   "keterangan": "44 dari 98 indikator tercapai"
   },
   {
    "slug": "dokumentasi",
@@ -100,7 +114,7 @@
    "subfolder": 0,
    "adaData": true,
    "jenis": "kalender",
-   "keterangan": "4 agenda 30 hari ke depan"
+   "keterangan": "2 agenda 30 hari ke depan"
   }
  ]
 }

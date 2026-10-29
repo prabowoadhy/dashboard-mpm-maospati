@@ -135,6 +135,7 @@ th{color:var(--mut);font-size:12px;font-weight:600;text-transform:none;letter-sp
 tbody th{background:var(--surface);color:var(--ink);font-weight:500}
 tfoot th,tfoot td{background:var(--surface-2);font-weight:600;border-top:1px solid var(--rule);border-bottom:0}
 td.num,th.num{text-align:right}
+.cellsub{display:block;margin-top:3px;font-size:11px;line-height:1.4;color:var(--mut)}
 tbody tr:hover{background:#f8faff}
 tbody tr:last-child td{border-bottom:0}
 th.sortable{padding:0}
@@ -296,6 +297,8 @@ footer.foot{margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);co
   .tree .file{flex-wrap:wrap}
   .tree .file .nm{white-space:normal;overflow:visible;text-overflow:clip;flex:1 1 100%}
   .tree .file .mod{margin-left:25px}
+  /* tabel rincian PKP digeser mendatar, bukan diremas jadi kolom sempit */
+  body[data-page="pkp"] #t-pkp table{min-width:680px}
 }
 @media (max-width:350px){
   .pagehead{padding:18px}

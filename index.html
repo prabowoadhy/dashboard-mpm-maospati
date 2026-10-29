@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="theme-color" content="#f7f9fc"/>
 <title>Dashboard MPM Maospati</title>
-<meta name="description" content="Ringkasan sembilan menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati"/>
+<meta name="description" content="Ringkasan sepuluh menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati"/>
 <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body data-page="index">
@@ -34,7 +34,7 @@
   <div class="pagehead">
     <div class="t">
       <h2 id="pagetitle">Beranda</h2>
-      <p id="pagesub">Ringkasan sembilan menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati</p>
+      <p id="pagesub">Ringkasan sepuluh menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati</p>
       <div class="stat-line" id="pagemeta"></div>
     </div>
     <div id="drivebtn2"></div>
@@ -44,7 +44,7 @@
 
 <div class="grid k4" id="kpis" style="margin-bottom:14px"></div>
   <div id="cards"></div>
-<section class="card"><h3>Cara kerja dashboard ini<span>singkat</span></h3><div id="catatan"></div><p class="src">Sumber data: <code>data/site.json</code> · hasil pembacaan 8 folder Google Drive MPM + kalender publik Promkes oleh <code>tools/sync.py</code></p></section>
+<section class="card"><h3>Cara kerja dashboard ini<span>singkat</span></h3><div id="catatan"></div><p class="src">Sumber data: <code>data/site.json</code> · hasil pembacaan 8 folder Google Drive MPM, spreadsheet PKP, dan kalender publik Promkes oleh <code>tools/sync.py</code></p></section>
 
   <details class="utility">
     <summary><span id="treecard">Isi folder Google Drive</span> <span id="filecount">memuat</span></summary>
@@ -59,11 +59,11 @@
     <summary>Cara membaca &amp; memperbaiki data</summary>
     <div class="body">
       <ul class="tl">
-        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
-        beserta folder tempat berkas itu berada di Google Drive.</li>
-        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
-        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel atau
+        spreadsheet asalnya, beserta folder Drive tempat berkas itu berada.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel atau spreadsheet itu
+        (tombol <b>Buka folder Drive</b> / <b>Buka spreadsheet</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive atau spreadsheet disunting, tekan <b>Sinkronkan data</b> di kanan atas agar
         halaman menampilkan angka terbaru.</li>
         <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
         "Saran perbaikan data".</li>
@@ -72,13 +72,13 @@
   </details>
 
   <footer class="foot">
-    <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
+    <span>Sumber data: Google Drive &amp; Sheets <b>MPM Maospati</b> &middot; kalender Promkes &middot; <span id="synced">memuat…</span></span>
     <span>UPTD Puskesmas Maospati</span>
   </footer>
 </main>
 
 <script>window.__DATA__ = window.__DATA__ || {}; window.__DATA__["index"] = {
- "generated": "28 Oktober 2026 09:07 WIB",
+ "generated": "29 Oktober 2026 08:40 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -112,6 +112,20 @@
    "berkas": 10,
    "subfolder": 2,
    "adaData": true
+  },
+  {
+   "slug": "pkp",
+   "menu": "PKP",
+   "subjudul": "Penilaian Kinerja Puskesmas 2026 · Klaster Pelayanan Manajemen",
+   "deskripsi": "Capaian indikator per klaster, target sasaran, dan catatan petugas",
+   "id": "",
+   "url": "https://docs.google.com/spreadsheets/d/1TSaNfar0dBChnncgr1IIB_HDFhSODmV74RALQb6ZJrI/edit?gid=1379104459#gid=1379104459",
+   "berkas": 0,
+   "subfolder": 0,
+   "adaData": true,
+   "jenis": "sheet",
+   "indikator": 98,
+   "keterangan": "44 dari 98 indikator tercapai"
   },
   {
    "slug": "dokumentasi",
@@ -179,7 +193,7 @@
    "subfolder": 0,
    "adaData": true,
    "jenis": "kalender",
-   "keterangan": "4 agenda 30 hari ke depan"
+   "keterangan": "2 agenda 30 hari ke depan"
   }
  ]
 };</script>

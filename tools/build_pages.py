@@ -13,6 +13,7 @@ Jalankan setelah mengubah daftar menu / struktur kartu:
     python tools/build_pages.py
 Untuk mengubah ISI/ringkasan data cukup sunting assets/pages/<slug>.js.
 """
+import json
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -95,11 +96,11 @@ def page(slug, menu, title, subtitle, content, show_tree=True):
     <summary>Cara membaca &amp; memperbaiki data</summary>
     <div class="body">
       <ul class="tl">
-        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel-nya
-        beserta folder tempat berkas itu berada di Google Drive.</li>
-        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel pada folder itu
-        (tombol <b>Buka folder Drive</b> di atas) dan cocokkan kolomnya.</li>
-        <li>Sesudah berkas diperbaiki di Drive, tekan <b>Sinkronkan data</b> di kanan atas agar
+        <li>Setiap panel mencantumkan <b>sumber data</b> di bagian bawah kartu: nama berkas Excel atau
+        spreadsheet asalnya, beserta folder Drive tempat berkas itu berada.</li>
+        <li>Kalau angka di halaman berbeda dengan dugaan Anda, buka berkas Excel atau spreadsheet itu
+        (tombol <b>Buka folder Drive</b> / <b>Buka spreadsheet</b> di atas) dan cocokkan kolomnya.</li>
+        <li>Sesudah berkas diperbaiki di Drive atau spreadsheet disunting, tekan <b>Sinkronkan data</b> di kanan atas agar
         halaman menampilkan angka terbaru.</li>
         <li>Format berkas yang dipakai dashboard dijelaskan di README pada bagian
         "Saran perbaikan data".</li>
@@ -108,7 +109,7 @@ def page(slug, menu, title, subtitle, content, show_tree=True):
   </details>
 
   <footer class="foot">
-    <span>Sumber data: Google Drive <b>MPM Maospati</b> &amp; kalender Promkes &middot; <span id="synced">memuat…</span></span>
+    <span>Sumber data: Google Drive &amp; Sheets <b>MPM Maospati</b> &middot; kalender Promkes &middot; <span id="synced">memuat…</span></span>
     <span>UPTD Puskesmas Maospati</span>
   </footer>
 </main>
@@ -128,14 +129,17 @@ SRC_KEL_LHK = ('<code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU<
                'LAPORAN: ADA/BELUM)')
 SRC_RUK = ('<code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> · folder <b>RUK</b>, sheet <code>BAB IV</code> '
            '(kolom pelayanan/unit, kegiatan, tujuan, sasaran, target, penanggung jawab)')
+SRC_PKP = ('spreadsheet <b>PKP KLASTER 1_2026</b> · <a href="SHEET_PKP_URL" target="_blank" rel="noopener">Google Sheets</a> '
+           '(kolom 2 kegiatan, 3 indikator, 4 target 2026, 5 satuan, 6 total sasaran, 7 target sasaran, '
+           '8 pencapaian, 9 capaian riil, 10 hasil kinerja)')
 
 PAGES = [
  dict(slug="index", menu="Beranda", title="Dashboard MPM Maospati",
-      subtitle="Ringkasan sembilan menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati",
+      subtitle="Ringkasan sepuluh menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati",
       content='<div class="grid k4" id="kpis" style="margin-bottom:14px"></div>\n  <div id="cards"></div>\n'
               + card("Cara kerja dashboard ini", "singkat", '<div id="catatan"></div>',
-                     src='<code>data/site.json</code> · hasil pembacaan 8 folder Google Drive MPM '
-                         '+ kalender publik Promkes oleh <code>tools/sync.py</code>')),
+                     src='<code>data/site.json</code> · hasil pembacaan 8 folder Google Drive MPM, '
+                         'spreadsheet PKP, dan kalender publik Promkes oleh <code>tools/sync.py</code>')),
 
  dict(slug="smd-mmd", menu="SMD MMD", title="SMD MMD · Dashboard MPM Maospati",
       subtitle="Survey Mawas Diri &amp; Musyawarah Masyarakat Desa: rekap per desa, capaian indikator, dan kelengkapan berkas",
@@ -186,6 +190,24 @@ PAGES = [
                '<label>Cari <input id="q-ruk" type="search" placeholder="kata kunci..." size="22"/></label></div>'
                '<div class="scroll"><table id="t-ruk"></table></div>',
                full=True, src=SRC_RUK)
+        + '</div>'),
+
+ dict(slug="pkp", menu="PKP", title="PKP · Dashboard MPM Maospati",
+      subtitle="Penilaian Kinerja Puskesmas 2026 · Klaster Pelayanan Manajemen: capaian indikator, target sasaran, dan catatan petugas",
+      show_tree=False,
+      content='<div class="grid k4" id="kpis" style="margin-bottom:14px"></div>\n  <div class="grid k2">\n'
+        + card("Capaian per Klaster", "rata-rata hasil kinerja · angka kanan: indikator tercapai / jumlah indikator",
+               '<div id="c-klaster"></div>', full=True, src=SRC_PKP)
+        + card("Sebaran Capaian", "jumlah indikator per rentang capaian", '<div id="c-sebaran"></div>', src=SRC_PKP)
+        + card("Catatan &amp; Bukti di Spreadsheet", "catatan petugas dan tautan folder bukti", '<div id="c-catatan"></div>',
+               src=SRC_PKP)
+        + card("Indikator Terendah", "8 indikator paling jauh dari target", '<div class="scroll" style="max-height:none"><div id="t-terendah"></div></div>',
+               full=True, src=SRC_PKP)
+        + card("Rincian Indikator", '<span id="c-info"></span>',
+               '<div class="rowctl"><label>Klaster <select id="f-klaster"></select></label>'
+               '<label>Cari <input id="q-pkp" type="search" placeholder="kata kunci..." size="22"/></label></div>'
+               '<div class="scroll"><div id="t-pkp"></div></div>',
+               full=True, src=SRC_PKP)
         + '</div>'),
 
  dict(slug="dokumentasi", menu="Dokumentasi", title="Dokumentasi · Dashboard MPM Maospati",
@@ -278,11 +300,19 @@ PAGES = [
 
 
 def main():
+    pkp_url = ("https://docs.google.com/spreadsheets/d/1TSaNfar0dBChnncgr1IIB_HDFhSODmV74RALQb6ZJrI"
+               "/edit?gid=1379104459#gid=1379104459")
+    pkp_data = os.path.join(ROOT, "data", "pkp.json")
+    if os.path.exists(pkp_data):
+        try:
+            pkp_url = json.load(open(pkp_data, encoding="utf-8"))["folder"]["url"] or pkp_url
+        except Exception:
+            pass
     for p in PAGES:
         embed = ("https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com"
                  "&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1")
         html = page(p["slug"], p["menu"], p["title"], p["subtitle"], p["content"],
-                    show_tree=p.get("show_tree", True)).replace("JADWAL_EMBED", embed)
+                    show_tree=p.get("show_tree", True)).replace("JADWAL_EMBED", embed).replace("SHEET_PKP_URL", pkp_url)
         open(os.path.join(ROOT, p["slug"] + ".html"), "w", encoding="utf-8").write(html)
         print("  -> " + p["slug"] + ".html")
     print(f"{len(PAGES)} halaman dibuat di {ROOT}")

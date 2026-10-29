@@ -2,17 +2,20 @@
 sync.py - mesin data Dashboard MPM.
 
 Membaca 8 folder Google Drive "MPM Maospati" (lewat endpoint publik embeddedfolderview),
-mengunduh & menganalisis berkas .xlsx di dalamnya, lalu menulis SATU berkas JSON per halaman:
+mengunduh & menganalisis berkas .xlsx di dalamnya, ditambah satu spreadsheet PKP dan satu
+kalender Promkes, lalu menulis SATU berkas JSON per halaman:
 
-    data/site.json                     -> daftar 8 menu + ringkasan jumlah berkas
+    data/site.json                     -> daftar menu + ringkasan jumlah berkas
     data/smd-mmd.json                  -> halaman SMD MMD
     data/laporan-posyandu.json
     data/ruk.json
+    data/pkp.json                      -> halaman PKP (spreadsheet Google)
     data/dokumentasi.json
     data/data-posyandu.json
     data/data-kader.json
     data/spj-bok.json
     data/laporan-kegiatan-dinkes.json
+    data/jadwal-promkes.json           -> halaman Jadwal Promkes (kalender publik)
 
 Cara pakai (dari root repo):
     pip install openpyxl
@@ -71,6 +74,21 @@ CALENDAR = {
 }
 BULAN_ID = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
             "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+
+# ============================ menu tambahan: PKP (Google Sheets) ============================
+# Penilaian Kinerja Puskesmas tidak berada di folder Drive, tetapi di satu spreadsheet
+# publik. Sheet dibaca lewat endpoint gviz (CSV/JSON) supaya angka sel rumus ikut terkirim.
+SHEET_PKP = {
+    "slug": "pkp",
+    "menu": "PKP",
+    "subjudul": "Penilaian Kinerja Puskesmas 2026 · Klaster Pelayanan Manajemen",
+    "deskripsi": "Capaian indikator per klaster, target sasaran, dan catatan petugas",
+    "id": "1TSaNfar0dBChnncgr1IIB_HDFhSODmV74RALQb6ZJrI",
+    "gid": "1379104459",
+    "nama": "PKP KLASTER 1_2026",
+}
+SHEET_PKP["url"] = ("https://docs.google.com/spreadsheets/d/" + SHEET_PKP["id"] +
+                    "/edit?gid=" + SHEET_PKP["gid"] + "#gid=" + SHEET_PKP["gid"])
 
 # ============================ crawl folder ============================
 def folder_items(fid, offline=False):
@@ -553,6 +571,138 @@ def analisa_kalender():
     }
 
 
+# ============================ analisa PKP (Google Sheets) ============================
+KODE_BARIS = re.compile(r"^(\d+(?:\.\d+)+)\.?\s*(.+)$")
+
+def _sel(row, i):
+    """nilai satu sel dari baris gviz; None bila sel kosong."""
+    cells = row.get("c") or []
+    return cells[i].get("v") if i < len(cells) and cells[i] else None
+
+def _bulat(v):
+    return None if v is None else round(float(v), 2)
+
+def status_pkp(kinerja):
+    if kinerja is None:
+        return "belum"
+    if kinerja >= 99.95:
+        return "tercapai"
+    if kinerja >= 75:
+        return "hampir"
+    if kinerja >= 50:
+        return "kurang"
+    return "rendah"
+
+def analisa_pkp(offline=False):
+    """Baca sheet 'Instrumen Penghitungan Klaster Pelayanan Manajemen'.
+
+    Baris berkode 1.x = klaster, 1.x.y = sub-klaster, dan baris bernomor kecil
+    dengan kolom kegiatan/indikator terisi = indikator. Baris klaster hanya
+    menyimpan agregat di kolom 9-10, jadi ringkasan dihitung ulang dari baris
+    indikator agar angkanya dapat ditelusuri.
+    """
+    kosong = {"kpi": {"total": 0, "dinilai": 0, "tercapai": 0, "rata": None, "rendah": 0,
+                      "belum": 0, "klaster": 0, "tahun": 2026, "sumber": SHEET_PKP["nama"]},
+              "klaster": [], "indikator": [], "sebaran": [], "tahun": 2026,
+              "sumber": SHEET_PKP["nama"]}
+    url = (f"https://docs.google.com/spreadsheets/d/{SHEET_PKP['id']}/gviz/tq"
+           f"?tqx=out:json&gid={SHEET_PKP['gid']}")
+    cache = os.path.join(CACHE, "sheet_" + SHEET_PKP["gid"] + ".json")
+    raw = ""
+    if offline and os.path.exists(cache):
+        raw = open(cache, encoding="utf-8").read()
+    else:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                raw = r.read().decode("utf-8", "replace")
+            open(cache, "w", encoding="utf-8").write(raw)
+        except Exception as e:
+            print("    ! gagal membaca spreadsheet PKP:", e)
+            if not os.path.exists(cache):
+                return kosong
+            raw = open(cache, encoding="utf-8").read()
+    try:
+        raw = raw[raw.index("{"):raw.rindex("}") + 1]
+        rows = json.loads(raw)["table"]["rows"]
+    except Exception as e:
+        print("    ! isi spreadsheet PKP tidak terbaca:", e)
+        return kosong
+
+    klaster, sekarang, sub, ind = [], None, "", []
+    for row in rows:
+        a = cap(_sel(row, 0) or "")
+        b = cap(_sel(row, 1) or "")
+        c = cap(_sel(row, 2) or "")
+        if not a and norm(b) == "KOLOM KE":
+            break                                  # baris legenda kolom, bukan data
+        if a and not b and not c:
+            m = KODE_BARIS.match(a)
+            if not m:
+                continue
+            kode, nama = m.group(1), cap(m.group(2))
+            if len(kode.split(".")) == 2:
+                sekarang = {"kode": kode, "nama": nama}
+                klaster.append(sekarang)
+                sub = kode
+            elif sekarang:
+                sub = kode                         # sub-klaster, mis. 1.4.1
+            continue
+        if not a or not c:
+            continue
+        m = re.match(r"^(\d+(?:\.\d+)*)\.?$", a)
+        k = cap(_sel(row, 10) or "")
+        l = cap(_sel(row, 11) or "")
+        catatan = " · ".join(x for x in (k, l) if x and not x.lower().startswith("http"))
+        bukti = next((x for x in (k, l) if x.lower().startswith("http")), "")
+        kinerja = _bulat(_sel(row, 9))
+        ind.append({
+            "no": m.group(1) if m else a,
+            "kegiatan": b,
+            "indikator": c,
+            "klaster": sekarang["kode"] if sekarang else "",
+            "klasterNama": sekarang["nama"] if sekarang else "",
+            "sub": sub,
+            "target": _bulat(_sel(row, 3)),
+            "satuan": cap(_sel(row, 4) or ""),
+            "totalSasaran": _bulat(_sel(row, 5)),
+            "targetSasaran": _bulat(_sel(row, 6)),
+            "pencapaian": _bulat(_sel(row, 7)),
+            "capaianRiil": _bulat(_sel(row, 8)),
+            "kinerja": kinerja,
+            "status": status_pkp(kinerja),
+            "catatan": catatan,
+            "bukti": bukti,
+        })
+
+    nilai = [x["kinerja"] for x in ind if x["kinerja"] is not None]
+    ringkas = []
+    for kl in klaster:
+        isi = [x for x in ind if x["klaster"] == kl["kode"]]
+        n = [x["kinerja"] for x in isi if x["kinerja"] is not None]
+        ringkas.append({
+            "kode": kl["kode"], "nama": kl["nama"],
+            "indikator": len(isi), "dinilai": len(n),
+            "tercapai": len([v for v in n if v >= 99.95]),
+            "rata": round(sum(n) / len(n), 1) if n else None,
+        })
+    urut = ["tercapai", "hampir", "kurang", "rendah", "belum"]
+    return {
+        "kpi": {"total": len(ind), "dinilai": len(nilai),
+                "tercapai": len([v for v in nilai if v >= 99.95]),
+                "rata": round(sum(nilai) / len(nilai), 1) if nilai else None,
+                "rendah": len([v for v in nilai if v < 50]),
+                "belum": len([x for x in ind if x["kinerja"] is None]),
+                "klaster": len(klaster), "tahun": 2026, "sumber": SHEET_PKP["nama"]},
+        "klaster": ringkas,
+        "indikator": ind,
+        "sebaran": [{"status": s, "jumlah": len([x for x in ind if x["status"] == s])} for s in urut],
+        "tahun": 2026,
+        "sumber": SHEET_PKP["nama"],
+        "catatan": ("Angka diambil apa adanya dari spreadsheet; ringkasan per klaster dihitung "
+                    "ulang dari baris indikator (rata-rata Hasil Kinerja Puskesmas, dibatasi 100%)."),
+    }
+
 # ============================ main ============================
 def main():
     ap = argparse.ArgumentParser()
@@ -635,6 +785,35 @@ def main():
         "id": "", "url": CALENDAR["embed"], "berkas": ana_k["kpi"]["total"], "subfolder": 0,
         "adaData": True, "jenis": "kalender",
         "keterangan": f"{ana_k['kpi']['dekat30']} agenda 30 hari ke depan",
+    })
+
+    # --- menu tambahan: PKP (Google Sheets, bukan folder Drive) ---
+    if not args.only or args.only == SHEET_PKP["slug"]:
+        print("Analisa pkp ...")
+        ana_p = analisa_pkp(args.offline)
+        berkas_pkp = os.path.join(DATA, SHEET_PKP["slug"] + ".json")
+        if ana_p["kpi"]["total"] == 0 and os.path.exists(berkas_pkp):
+            print("    ! spreadsheet tidak terbaca, data PKP lama dipertahankan")
+        else:
+            write(SHEET_PKP["slug"], {
+                "slug": SHEET_PKP["slug"], "menu": SHEET_PKP["menu"],
+                "subjudul": SHEET_PKP["subjudul"], "deskripsi": SHEET_PKP["deskripsi"],
+                "folder": {"id": SHEET_PKP["id"], "url": SHEET_PKP["url"],
+                           "name": SHEET_PKP["nama"], "sheet": True},
+                "statistik": {"berkas": 0, "subfolder": 0, "indikator": ana_p["kpi"]["total"]},
+                "struktur": None, "files": [], "analisa": ana_p, "adaData": True, "jenis": "sheet",
+            })
+    try:
+        ana_p = json.load(open(os.path.join(DATA, SHEET_PKP["slug"] + ".json"), encoding="utf-8"))["analisa"]
+    except Exception:
+        ana_p = {"kpi": {"total": 0, "tercapai": 0, "rata": None}}
+    site["folders"].insert(3, {
+        "slug": SHEET_PKP["slug"], "menu": SHEET_PKP["menu"],
+        "subjudul": SHEET_PKP["subjudul"], "deskripsi": SHEET_PKP["deskripsi"],
+        "id": "", "url": SHEET_PKP["url"], "berkas": 0, "subfolder": 0,
+        "adaData": True, "jenis": "sheet",
+        "indikator": ana_p["kpi"]["total"],
+        "keterangan": f"{ana_p['kpi']['tercapai']} dari {ana_p['kpi']['total']} indikator tercapai",
     })
 
     site["generated"] = stempel(datetime.now(timezone(timedelta(hours=7))))
