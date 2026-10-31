@@ -1,5 +1,5 @@
 {
- "generated": "30 Oktober 2026 11:01 WIB",
+ "generated": "31 Oktober 2026 09:13 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -46,7 +46,7 @@
    "adaData": true,
    "jenis": "sheet",
    "indikator": 98,
-   "keterangan": "44 dari 98 indikator tercapai"
+   "keterangan": "52 dari 98 indikator tercapai"
   },
   {
    "slug": "dokumentasi",
@@ -110,11 +110,11 @@
    "deskripsi": "Kalender kegiatan Promkes - agenda SMD/MMD, posyandu, dan penyuluhan",
    "id": "",
    "url": "https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1",
-   "berkas": 29,
+   "berkas": 31,
    "subfolder": 0,
    "adaData": true,
    "jenis": "kalender",
-   "keterangan": "2 agenda 30 hari ke depan"
+   "keterangan": "3 agenda 30 hari ke depan"
   }
  ]
 }
