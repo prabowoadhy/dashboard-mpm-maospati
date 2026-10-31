@@ -129,17 +129,16 @@ SRC_KEL_LHK = ('<code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU<
                'LAPORAN: ADA/BELUM)')
 SRC_RUK = ('<code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> · folder <b>RUK</b>, sheet <code>BAB IV</code> '
            '(kolom pelayanan/unit, kegiatan, tujuan, sasaran, target, penanggung jawab)')
-SRC_PKP = ('spreadsheet <b>PKP KLASTER 1_2026</b> · <a href="SHEET_PKP_URL" target="_blank" rel="noopener">Google Sheets</a> '
-           '(kolom 2 kegiatan, 3 indikator, 4 target 2026, 5 satuan, 6 total sasaran, 7 target sasaran, '
-           '8 pencapaian, 9 capaian riil, 10 hasil kinerja)')
+SRC_PKP = ('5 spreadsheet di folder <b>PKP</b>: Intervensi KRT, Intervensi Sekolah, PHBS RT Sehat, '
+           'PHBS Rumah Tangga, PHBS Sekolah (kolom TARGET SASARAN / CAPAIAN per bulan serta TOTAL CAPAIAN)')
 
 PAGES = [
  dict(slug="index", menu="Beranda", title="Dashboard MPM Maospati",
       subtitle="Ringkasan sepuluh menu kegiatan Manajemen Pemberdayaan Masyarakat UPTD Puskesmas Maospati",
       content='<div class="grid k4" id="kpis" style="margin-bottom:14px"></div>\n  <div id="cards"></div>\n'
               + card("Cara kerja dashboard ini", "singkat", '<div id="catatan"></div>',
-                     src='<code>data/site.json</code> · hasil pembacaan 8 folder Google Drive MPM, '
-                         'spreadsheet PKP, dan kalender publik Promkes oleh <code>tools/sync.py</code>')),
+                     src='<code>data/site.json</code> · hasil pembacaan 9 folder Google Drive MPM '
+                         'dan kalender publik Promkes oleh <code>tools/sync.py</code>')),
 
  dict(slug="smd-mmd", menu="SMD MMD", title="SMD MMD · Dashboard MPM Maospati",
       subtitle="Survey Mawas Diri &amp; Musyawarah Masyarakat Desa: rekap per desa, capaian indikator, dan kelengkapan berkas",
@@ -193,21 +192,24 @@ PAGES = [
         + '</div>'),
 
  dict(slug="pkp", menu="PKP", title="PKP · Dashboard MPM Maospati",
-      subtitle="Penilaian Kinerja Puskesmas 2026 · Klaster Pelayanan Manajemen: capaian indikator, target sasaran, dan catatan petugas",
-      show_tree=False,
+      subtitle="Penilaian Kinerja Puskesmas 2026: capaian program intervensi &amp; PHBS per desa dan per bulan",
       content='<div class="grid k4" id="kpis" style="margin-bottom:14px"></div>\n  <div class="grid k2">\n'
-        + card("Capaian per Klaster", "rata-rata hasil kinerja · angka kanan: indikator tercapai / jumlah indikator",
-               '<div id="c-klaster"></div>', full=True, src=SRC_PKP)
-        + card("Sebaran Capaian", "jumlah indikator per rentang capaian", '<div id="c-sebaran"></div>', src=SRC_PKP)
-        + card("Catatan &amp; Bukti di Spreadsheet", "catatan petugas dan tautan folder bukti", '<div id="c-catatan"></div>',
+        + card("Capaian per Program", "persentase capaian · angka kanan: capaian / target",
+               '<div id="c-program"></div>', full=True, src=SRC_PKP)
+        + card("Program Mencapai Target", "jumlah program 100% ke atas dan di bawahnya", '<div id="c-ringkas"></div>',
                src=SRC_PKP)
-        + card("Indikator Terendah", "8 indikator paling jauh dari target", '<div class="scroll" style="max-height:none"><div id="t-terendah"></div></div>',
+        + card("Selisih Angka Sheet", "baris TOTAL dibanding jumlah baris desa", '<div id="c-selisih"></div>',
+               src=SRC_PKP)
+        + card("Program di Bawah Target", "program dengan capaian kurang dari 100%",
+               '<div class="scroll" style="max-height:none"><div id="t-bawah"></div></div>',
                full=True, src=SRC_PKP)
-        + card("Rincian Indikator", '<span id="c-info"></span>',
-               '<div class="rowctl"><label>Klaster <select id="f-klaster"></select></label>'
-               '<label>Cari <input id="q-pkp" type="search" placeholder="kata kunci..." size="22"/></label></div>'
-               '<div class="scroll"><div id="t-pkp"></div></div>',
+        + card("Rincian per Desa", '<span id="c-info"></span>',
+               '<div class="rowctl"><label>Program <select id="f-program"></select></label>'
+               '<label>Cari <input id="q-pkp" type="search" placeholder="nama desa..." size="22"/></label></div>'
+               '<div class="scroll"><div id="t-desa"></div></div>',
                full=True, src=SRC_PKP)
+        + card("Cara membaca angka PKP", "catatan sumber data", '<div id="c-catatan"></div>', full=True,
+               src=SRC_PKP)
         + '</div>'),
 
  dict(slug="dokumentasi", menu="Dokumentasi", title="Dokumentasi · Dashboard MPM Maospati",
@@ -300,19 +302,11 @@ PAGES = [
 
 
 def main():
-    pkp_url = ("https://docs.google.com/spreadsheets/d/1TSaNfar0dBChnncgr1IIB_HDFhSODmV74RALQb6ZJrI"
-               "/edit?gid=1379104459#gid=1379104459")
-    pkp_data = os.path.join(ROOT, "data", "pkp.json")
-    if os.path.exists(pkp_data):
-        try:
-            pkp_url = json.load(open(pkp_data, encoding="utf-8"))["folder"]["url"] or pkp_url
-        except Exception:
-            pass
     for p in PAGES:
         embed = ("https://calendar.google.com/calendar/embed?src=dhellayaamanda2%40gmail.com"
                  "&ctz=Asia%2FJakarta&hl=id&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&showTabs=1")
         html = page(p["slug"], p["menu"], p["title"], p["subtitle"], p["content"],
-                    show_tree=p.get("show_tree", True)).replace("JADWAL_EMBED", embed).replace("SHEET_PKP_URL", pkp_url)
+                    show_tree=p.get("show_tree", True)).replace("JADWAL_EMBED", embed)
         open(os.path.join(ROOT, p["slug"] + ".html"), "w", encoding="utf-8").write(html)
         print("  -> " + p["slug"] + ".html")
     print(f"{len(PAGES)} halaman dibuat di {ROOT}")

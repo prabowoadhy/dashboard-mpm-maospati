@@ -1,121 +1,128 @@
-/* PKP · capaian indikator Penilaian Kinerja Puskesmas per klaster.
-   Sumber: spreadsheet "PKP KLASTER 1_2026" (dibaca tools/sync.py). */
+/* PKP · capaian Penilaian Kinerja Puskesmas per program, desa, dan bulan.
+   Sumber: lima spreadsheet pada folder Drive "PKP" (dibaca tools/sync.py). */
 window.renderPage = function(a){
   a = a || {};
   const k = a.kpi || {};
-  const ind = a.indikator || [];
-  const klaster = a.klaster || [];
-  const sebaran = a.sebaran || [];
+  const pr = a.program || [];
 
-  const STATUS = {
-    tercapai: { label: 'tercapai', cls: 'ok' },
-    hampir:   { label: 'hampir', cls: '' },
-    kurang:   { label: 'perlu dorongan', cls: 'wr' },
-    rendah:   { label: 'jauh dari target', cls: 'no' },
-    belum:    { label: 'belum ada data', cls: '' }
-  };
-  const pill = s => {
-    const x = STATUS[s] || STATUS.belum;
-    return `<span class="pill${x.cls ? ' ' + x.cls : ''}">${x.label}</span>`;
-  };
-  /* persentase memakai koma desimal seperti angka di spreadsheet aslinya */
   const pct = v => (v === null || v === undefined || isNaN(v)) ? '&ndash;'
-    : Number(v).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + '%';
+    : (Number(v) % 1 ? Number(v).toFixed(1).replace('.', ',') : Number(v)) + '%';
   const angka = v => (v === null || v === undefined) ? '&ndash;' : fnum(v);
 
-  if (!ind.length){
-    set('kpis', '<p class="empty" style="grid-column:1/-1">Belum ada indikator yang terbaca dari spreadsheet PKP. ' +
-      'Pastikan spreadsheet dibagikan <b>Anyone with the link, Viewer</b>, lalu tekan <b>Sinkronkan data</b>.</p>');
-    ['c-klaster', 'c-sebaran', 'c-catatan'].forEach(id =>
-      set(id, '<p class="empty">Menunggu data indikator dari spreadsheet.</p>'));
-    set('t-terendah', '<p class="empty">Menunggu data indikator dari spreadsheet.</p>');
-    set('t-pkp', '<p class="empty">Menunggu data indikator dari spreadsheet.</p>');
+  if (!pr.length){
+    set('kpis', '<p class="empty" style="grid-column:1/-1">Belum ada data program PKP. ' +
+      'Pastikan spreadsheet di folder <b>PKP</b> dibagikan <b>Anyone with the link, Viewer</b>, ' +
+      'lalu tekan <b>Sinkronkan data</b>.</p>');
+    ['c-program', 'c-ringkas', 'c-selisih', 'c-catatan'].forEach(id =>
+      set(id, '<p class="empty">Menunggu data program PKP.</p>'));
+    set('t-bawah', '<p class="empty">Menunggu data program PKP.</p>');
+    set('t-desa', '<p class="empty">Menunggu data program PKP.</p>');
     set('c-info', 'belum ada data');
     return;
   }
 
+  const warnaLatar = p => p.persen === null ? '#9aa0a6'
+    : (p.persen >= 100 ? '#137333' : (p.persen >= 75 ? '#0b57d0' : '#c5221f'));
+
   set('kpis', kpiCards([
-    { label: 'Indikator', value: fnum(k.total),
-      sub: `${fnum(k.klaster || klaster.length)} klaster · ${fnum(k.dinilai)} sudah terisi` },
-    { label: 'Tercapai target', value: fnum(k.tercapai),
-      sub: `${k.total ? pct(100 * k.tercapai / k.total) : '–'} dari ${fnum(k.total)} indikator` },
-    { label: 'Rata-rata hasil kinerja', value: pct(k.rata),
-      sub: `${fnum(k.dinilai)} indikator terisi · nilai dibatasi 100%` },
-    { label: 'Perlu perhatian', value: fnum(k.rendah),
-      sub: `indikator di bawah 50% · ${fnum(k.belum)} belum ada data` },
+    { label: 'Program terpantau', value: fnum(k.program),
+      sub: `${fnum(k.bulanan)} berdata bulanan · ${fnum((k.program || 0) - (k.bulanan || 0))} tahunan` },
+    { label: 'Desa / kelurahan', value: fnum(k.desa),
+      sub: 'sama di kelima spreadsheet' },
+    { label: 'Capai 100% ke atas', value: fnum(k.mencapai),
+      sub: `dari ${fnum(k.program)} program · masing-masing punya satuan sendiri` },
+    { label: 'Di bawah target', value: fnum(k.bawah),
+      sub: k.bawah ? 'perlu dorongan capaian' : 'semua program sudah mencapai target' },
   ]));
 
-  /* satu batang per klaster: panjang = rata-rata hasil kinerja, angka kanan = tercapai/total */
-  set('c-klaster', barRows(klaster.map(x => ({
-    label: `${x.kode} ${x.nama}`,
-    value: x.rata === null || x.rata === undefined ? 0 : x.rata,
-    max: 100,
-    note: x.rata === null || x.rata === undefined ? 'belum ada' : `${x.tercapai}/${x.indikator}`,
-    color: '#0b57d0'
+  /* satu batang per program: panjang = persentase capaian (skala 150%) */
+  set('c-program', barRows(pr.map(p => ({
+    label: `${p.kode} · ${p.nama}`,
+    value: p.persen === null ? 0 : Math.min(p.persen, 150),
+    max: 150,
+    note: p.persen === null ? 'belum ada target'
+      : `${pct(p.persen)} · ${angka(p.capaian)}/${angka(p.target)}`,
+    color: warnaLatar(p)
   }))));
 
-  const warna = { tercapai: '#137333', hampir: '#0b57d0', kurang: '#b06000', rendah: '#c5221f', belum: '#9aa0a6' };
-  set('c-sebaran', barRows(sebaran.map(s => ({
-    label: STATUS[s.status] ? STATUS[s.status].label : s.status,
-    value: s.jumlah,
-    max: k.total || 1,
-    note: angka(s.jumlah),
-    color: warna[s.status]
-  }))));
+  /* ringkasan: berapa program di atas dan di bawah 100% */
+  set('c-ringkas', barRows([
+    { label: 'Mencapai 100% ke atas', value: k.mencapai || 0, max: k.program || 1,
+      note: `${fnum(k.mencapai)} program`, color: '#137333' },
+    { label: 'Di bawah 100%', value: k.bawah || 0, max: k.program || 1,
+      note: `${fnum(k.bawah)} program`, color: '#c5221f' },
+  ]));
 
-  const terendah = ind
-    .filter(x => x.kinerja !== null && x.kinerja !== undefined && !isNaN(x.kinerja))
-    .sort((x, y) => x.kinerja - y.kinerja)
-    .slice(0, 8);
-  set('t-terendah', terendah.length ? table(
-    [{ label: 'Hasil kinerja', num: true, html: r => pct(r.kinerja) },
-     { label: 'Indikator', html: r => `${esc(r.indikator)}<span class="cellsub">${esc(r.klaster)} ${esc(r.klasterNama)}</span>` },
-     { label: 'Status', html: r => pill(r.status) }],
-    terendah
-  ) : '<p class="empty">Semua indikator sudah terisi nilainya.</p>');
+  /* selisih antara baris TOTAL di spreadsheet dan jumlah baris desa */
+  const selisih = a.selisih || [];
+  set('c-selisih', selisih.length
+    ? '<ul class="tl">' + selisih.map(x =>
+        `<li><b>${esc(x.kode)} ${esc(x.nama)}</b>: baris TOTAL menulis <b>${angka(x.sheet)}</b>, ` +
+        `jumlah baris desa <b>${angka(x.hitung)}</b> (selisih ${angka(x.selisih)}). ` +
+        'Halaman ini memakai jumlah baris desa supaya angkanya bisa ditelusuri.</li>').join('') + '</ul>'
+    : '<p class="empty">Tidak ada selisih pada spreadsheet yang baris TOTAL-nya terbaca.</p>');
 
-  /* tabel rincian: disaring per klaster dan kata kunci */
-  const sel = el('f-klaster');
+  /* program yang belum mencapai 100% */
+  const bawah = pr.filter(p => p.persen !== null && p.persen < 100)
+    .sort((x, y) => x.persen - y.persen);
+  set('t-bawah', bawah.length
+    ? table(
+      [{ label: 'Program', html: r => `${esc(r.kode)}<span class="cellsub">${esc(r.nama)}</span>` },
+       { label: 'Capaian', num: true, html: r => angka(r.capaian) },
+       { label: 'Target', num: true, html: r => angka(r.target) },
+       { label: 'Persentase', num: true, html: r => pct(r.persen) },
+       { label: 'Kurang', num: true, html: r => angka(Math.round((r.target - r.capaian) * 100) / 100) }],
+      bawah)
+    : '<p class="empty">Semua program sudah mencapai 100% ke atas.</p>');
+
+  /* rincian per desa, disaring per program dan kata kunci */
+  const sel = el('f-program');
   if (sel){
-    sel.innerHTML = '<option value="">Semua klaster</option>' + klaster.map(x =>
-      `<option value="${esc(x.kode)}">${esc(x.kode + ' ' + x.nama)}</option>`).join('');
+    sel.innerHTML = '<option value="">Semua program</option>' + pr.map(p =>
+      `<option value="${esc(p.kode)}">${esc(p.kode)} · ${esc(p.nama)}</option>`).join('');
   }
+  const cari = el('q-pkp');
   const isi = () => {
-    const kl = sel ? sel.value : '';
-    const cari = el('q-pkp') ? el('q-pkp').value.toLowerCase().trim() : '';
-    const rows = ind.filter(x => (!kl || x.klaster === kl) &&
-      (!cari || (x.indikator + ' ' + x.kegiatan + ' ' + x.klasterNama).toLowerCase().indexOf(cari) >= 0));
-    set('c-info', `${fnum(rows.length)} dari ${fnum(ind.length)} indikator`);
-    set('t-pkp', rows.length ? table(
-      [{ label: 'No', key: 'no', num: true },
-       { label: 'Indikator', key: 'indikator' },
-       { label: 'Klaster', key: 'klasterNama' },
-       { label: 'Hasil kinerja', num: true, html: r => pct(r.kinerja) },
-       { label: 'Status', html: r => pill(r.status) },
-       { label: 'Target', num: true, html: r => r.target === null || r.target === undefined ? '&ndash;' : pct(100 * r.target) },
-       { label: 'Satuan', key: 'satuan' },
-       { label: 'Target sasaran', num: true, html: r => angka(r.targetSasaran) },
-       { label: 'Pencapaian', num: true, html: r => angka(r.pencapaian) },
-       { label: 'Capaian riil', num: true, html: r => pct(r.capaianRiil) }],
-      rows
-    ) : '<p class="empty">Tidak ada indikator yang cocok dengan saringan ini. Kosongkan kata kunci atau pilih klaster lain.</p>');
+    const kd = sel ? sel.value : '';
+    const q = cari ? cari.value.toLowerCase().trim() : '';
+    const rows = [];
+    (a.rincian || []).forEach(p => {
+      if (kd && p.kode !== kd) return;
+      (p.desa || []).forEach(d => {
+        rows.push({
+          desa: d.desa, program: p.kode, programNama: p.nama,
+          target: d.target, capaian: d.capaian, persen: d.persen
+        });
+      });
+    });
+    const hasil = rows.filter(r => !q || r.desa.toLowerCase().indexOf(q) >= 0);
+    set('c-info', `${fnum(hasil.length)} baris desa-program ditampilkan`);
+    set('t-desa', hasil.length ? table(
+      [{ label: 'Desa', key: 'desa' },
+       { label: 'Program', html: r => `${esc(r.program)}<span class="cellsub">${esc(r.programNama)}</span>` },
+       { label: 'Target', num: true, html: r => angka(r.target) },
+       { label: 'Capaian', num: true, html: r => angka(r.capaian) },
+       { label: 'Persentase', num: true, html: r => pct(r.persen) }],
+      hasil)
+      : '<p class="empty">Tidak ada baris yang cocok dengan saringan ini.</p>');
   };
   if (sel) sel.onchange = isi;
-  const cari = el('q-pkp');
   if (cari) cari.oninput = isi;
   isi();
 
-  const catatan = ind.filter(x => x.catatan);
-  const bukti = ind.filter(x => x.bukti);
-  set('c-catatan',
-    (catatan.length
-      ? '<ul class="tl">' + catatan.map(x =>
-          `<li><b>${esc(x.indikator)}</b> <span class="muted">(${esc(x.klaster)} ${esc(x.klasterNama)})</span> · ${esc(x.catatan)}</li>`
-        ).join('') + '</ul>'
-      : '<p class="empty">Belum ada catatan petugas pada spreadsheet.</p>') +
-    (bukti.length
-      ? `<p class="note">Tautan folder bukti pada spreadsheet (${fnum(bukti.length)} indikator): ` +
-        bukti.map(x => `<a href="${esc(x.bukti)}" target="_blank" rel="noopener">${esc(x.klaster)} baris ${esc(x.no)}</a>`).join(' · ') +
-        '.</p>'
-      : ''));
+  set('c-catatan', '<ul class="tl">' +
+    '<li>Lima spreadsheet di folder <b>PKP</b>: ' +
+      pr.map(p => `<b>${esc(p.kode)}</b> ${esc(p.nama)}`).join(', ') + '.</li>' +
+    '<li>Persentase = capaian dibagi target. Capaian diambil dari kolom <b>TOTAL CAPAIAN</b>; ' +
+      'target dari kolom <b>TARGET SASARAN</b> / <b>TOTAL TARGET</b>, dan kalau tidak ada, dari ' +
+      'jumlah target bulanan.</li>' +
+    '<li>Kolom TOTAL CAPAIAN menumpuk capaian seluruh bulan sampai bulan berjalan, jadi angkanya ' +
+      'bisa melewati 100%. Angka di halaman ini dijumlah dari baris desa, bukan disalin dari baris TOTAL.</li>' +
+    '<li>' + (pr.filter(p => p.punyaBulan).length) + ' spreadsheet berisi TARGET dan CAPAIAN per bulan' +
+      (pr.some(p => !p.punyaBulan)
+        ? '; <b>' + pr.filter(p => !p.punyaBulan).map(p => esc(p.kode)).join(', ') + '</b> hanya berisi total sasaran dan capaian tahunan'
+        : '') + '.</li>' +
+    '<li>Setiap program punya satuan sendiri (rumah tangga, sekolah), karena itu angka antarprogram ' +
+      'tidak dijumlahkan.</li>' +
+    '</ul>');
 };

@@ -115,7 +115,6 @@ async function run(slug) {
     files: count(html('treehost'), /class="file"/g),
     folders: count(html('treehost'), /class="fld"/g),
     drive: /drive\.google\.com/.test(html('drivebtn2')),
-    sheetBtn: /docs\.google\.com\/spreadsheets/.test(html('drivebtn2')),
     kalBtn: /Buka kalender/.test(html('drivebtn2')),
     driveHeader: /drive\.google\.com/.test(html('drivebtn')),
     syncBtn: /Sinkronkan data/.test(html('drivebtn')),
@@ -138,7 +137,6 @@ for (const slug of PAGES) {
     const ok = !r.bad && !r.banner && r.menu === 11 && r.syncBtn && !r.driveHeader &&
       (slug === 'index' ? r.srcCount >= 2
         : slug === 'jadwal-promkes' ? (r.iframe === 1 && r.kalBtn && r.srcCount >= 4)
-        : slug === 'pkp' ? (r.sheetBtn && r.kpi > 0 && r.srcCount >= 3)
         : (r.drive && r.kpi > 0 && r.srcCount >= 3));
     if (!ok) gagal++;
     console.log(`${ok ? 'OK ' : '!! '}${slug.padEnd(25)} kpi=${String(r.kpi).padStart(2)} kartu=${String(r.cards).padStart(2)}` +

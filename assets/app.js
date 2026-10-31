@@ -149,11 +149,11 @@ const srcLine = txt => `<p class="src">Sumber data: ${txt}</p>`;
 
 /* sumber data untuk baris KPI di tiap halaman (KPI berada di luar kartu) */
 const KPI_SRC = {
-  'index': 'hasil pembacaan otomatis <code>tools/sync.py</code> atas 8 folder Google Drive MPM + kalender Promkes',
+  'index': 'hasil pembacaan otomatis <code>tools/sync.py</code> atas 9 folder Google Drive MPM + kalender Promkes',
   'smd-mmd': 'berkas rekap SMD per desa di folder <b>SMD MMD</b> dan <code>KELENGKAPAN SMD.xlsx</code>',
   'laporan-posyandu': '<code>KELENGKAPAN LHK.xlsx</code> · folder <b>LAPORAN POSYANDU</b>',
   'ruk': '<code>Copy of BAB IV Perencanaan Belanja 2027 SIP.xlsx</code> · folder <b>RUK</b>',
-  'pkp': 'spreadsheet <b>PKP KLASTER 1_2026</b> (Google Sheets) · kolom indikator, target, dan hasil kinerja',
+  'pkp': '5 spreadsheet PKP di folder <b>PKP</b>: Intervensi KRT, Intervensi Sekolah, PHBS RT Sehat, PHBS Rumah Tangga, PHBS Sekolah',
   'dokumentasi': 'folder <b>DOKUMENTASI</b> di Google Drive (belum ada berkas)',
   'data-posyandu': '<code>POSYANDU AKTIF.xlsx</code> · folder <b>DATA POSYANDU</b>',
   'data-kader': '<code>Data Kader .xlsx</code> · folder <b>DATA KADER</b>',
@@ -338,13 +338,6 @@ async function boot(){
       set('treehost', `<p class="muted">Halaman ini bersumber dari kalender publik Google, bukan folder Drive.</p>`);
       set('treecard', 'Sumber: Google Calendar');
       set('filecount', 'kalender');
-    } else if (d.folder && d.folder.sheet){
-      /* halaman berbasis spreadsheet publik, bukan folder Drive */
-      set('drivebtn2', `<a class="btn" href="${d.folder.url}" target="_blank" rel="noopener">Buka spreadsheet</a>`);
-      set('pagemeta', `spreadsheet: <b>${esc(d.folder.name)}</b> · <b>${fnum(d.statistik.indikator)}</b> indikator`);
-      set('treehost', '<p class="muted">Halaman ini bersumber dari Google Sheets, bukan folder Drive.</p>');
-      set('treecard', 'Sumber: Google Sheets');
-      set('filecount', 'spreadsheet');
     } else {
       set('drivebtn2', driveBtn(d.folder.url));
       set('pagemeta', `<b>${fnum(d.statistik.berkas)}</b> berkas · <b>${fnum(d.statistik.subfolder)}</b> subfolder ·

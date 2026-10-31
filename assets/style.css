@@ -298,7 +298,7 @@ footer.foot{margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);co
   .tree .file .nm{white-space:normal;overflow:visible;text-overflow:clip;flex:1 1 100%}
   .tree .file .mod{margin-left:25px}
   /* tabel rincian PKP digeser mendatar, bukan diremas jadi kolom sempit */
-  body[data-page="pkp"] #t-pkp table{min-width:680px}
+  body[data-page="pkp"] #t-desa table{min-width:560px}
 }
 @media (max-width:350px){
   .pagehead{padding:18px}
