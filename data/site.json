@@ -1,5 +1,5 @@
 {
- "generated": "9 November 2026 10:36 WIB",
+ "generated": "10 November 2026 11:35 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -19,7 +19,7 @@
    "deskripsi": "Kelengkapan laporan LHK per bulan",
    "id": "1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS",
    "url": "https://drive.google.com/drive/folders/1HYFFzGGYg9UUjoV5UsjfuDG9WmXJMrqS",
-   "berkas": 1,
+   "berkas": 5,
    "subfolder": 0,
    "adaData": true
   },
@@ -111,7 +111,7 @@
    "subfolder": 0,
    "adaData": true,
    "jenis": "kalender",
-   "keterangan": "23 agenda 30 hari ke depan"
+   "keterangan": "22 agenda 30 hari ke depan"
   }
  ]
 }
