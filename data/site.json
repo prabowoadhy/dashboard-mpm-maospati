@@ -1,5 +1,5 @@
 {
- "generated": "18 November 2026 11:08 WIB",
+ "generated": "19 November 2026 11:05 WIB",
  "folders": [
   {
    "slug": "smd-mmd",
@@ -111,7 +111,7 @@
    "subfolder": 0,
    "adaData": true,
    "jenis": "kalender",
-   "keterangan": "7 agenda 30 hari ke depan"
+   "keterangan": "5 agenda 30 hari ke depan"
   }
  ]
 }
